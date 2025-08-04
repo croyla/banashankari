@@ -12999,190 +12999,6 @@
             ]
           },
           {
-            "Route": "360K",
-            "Destination": "Attibele",
-            "Via": "Lalbagh",
-            "Area": "Hosur Road",
-            "PlatformNumber": "15",
-            "KannadaDestination": "ಅತ್ತಿಬೆಲೆ",
-            "KannadaArea": "ಹೊಸೂರು ರಸ್ತೆ",
-            "KannadaVia": "ಲಾಲ್‌ ಬಾಗ್‌",
-            "Stops": [
-              {
-                "name": "Kempegowda Bus Station",
-                "name_kn": "ಕೆಂಪೇಗೌಡ ಬಸ್ ನಿಲ್ದಾಣ"
-              },
-              {
-                "name": "Maharani College",
-                "name_kn": "ಮಹಾರಾಣಿ ಕಾಲೇಜ್"
-              },
-              {
-                "name": "KR Circle",
-                "name_kn": "ಕೆ ಆರ್‌ ವೃತ್ತ"
-              },
-              {
-                "name": "St Marthas Hospital",
-                "name_kn": "ಸೆಂಟ್ ಮಾರ್ಥಸ್ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Corporation",
-                "name_kn": "ಕಾರ್ಪೊರೇಷನ್"
-              },
-              {
-                "name": "Jai Bheem Circle (Poornima Theatre)",
-                "name_kn": "Jai Bheem Circle (Poornima Theatre)"
-              },
-              {
-                "name": "Lalbagh Main Gate",
-                "name_kn": "ಲಾಲ್ ಬಾಗ್ ‌ಮುಖ್ಯದ್ವಾರ"
-              },
-              {
-                "name": "Lalbagh Hopcoms",
-                "name_kn": "ಲಾಲ್‌ಬಾಗ್‌  ಹಾಪ್ ಕಾಮ್ಸ್"
-              },
-              {
-                "name": "7th Cross Wilson Garden",
-                "name_kn": "7ನೇ ಅಡ್ಡರಸ್ತೆ ವಿಲ್ಸನ್‌ ಗಾರ್ಡನ್"
-              },
-              {
-                "name": "Lakkasandra",
-                "name_kn": "ಲಕ್ಕಸಂದ್ರ"
-              },
-              {
-                "name": "Nimhans Hospital",
-                "name_kn": "ನಿಮ್ಹಾನ್ಸ್ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Bengaluru Dairy Circle",
-                "name_kn": "ಬೆಂಗಳೂರು ಡೈರಿ ವೃತ್ತ"
-              },
-              {
-                "name": "Muneshwara Devasthana",
-                "name_kn": "ಮುನೇಶ್ವರ ದೇವಸ್ಥಾನ"
-              },
-              {
-                "name": "Hosur Road Junction",
-                "name_kn": "Hosur Road Junction"
-              },
-              {
-                "name": "St Johns Hospital",
-                "name_kn": "ಸೆಂಟ್‌ ಜಾನ್ಸ್‌ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Koramangala Water Tank",
-                "name_kn": "ಕೋರಮಂಗಲ ವಾಟರ್ ಟ್ಯಾಂಕ್"
-              },
-              {
-                "name": "Kudure Mukha Colony",
-                "name_kn": "ಕುದುರೆಮುಖ ಕಾಲೋನಿ"
-              },
-              {
-                "name": "Krupanidhi College",
-                "name_kn": "ಕೃಪಾನಿಧಿ ಕಾಲೇಜು"
-              },
-              {
-                "name": "Madivala",
-                "name_kn": "ಮಡಿವಾಳ"
-              },
-              {
-                "name": "Roopena Agrahara",
-                "name_kn": "ರೂಪೇನ ಅಗ್ರಹಾರ"
-              },
-              {
-                "name": "Bommanahalli",
-                "name_kn": "ಬೊಮ್ಮನಹಳ್ಳಿ"
-              },
-              {
-                "name": "Garvebhavipalya",
-                "name_kn": "ಗಾರ್ವೇಭಾವಿ ಪಾಳ್ಯ"
-              },
-              {
-                "name": "Kudlu Gate",
-                "name_kn": "ಕೂಡ್ಲು ಗೇಟ್‌"
-              },
-              {
-                "name": "Singasandra",
-                "name_kn": "ಸಿಂಗಸಂದ್ರ"
-              },
-              {
-                "name": "Hosa Road",
-                "name_kn": "ಹೊಸ ರೋಡ್‌"
-              },
-              {
-                "name": "Electronic City PESIT College",
-                "name_kn": "ಎಲೆಕ್ಟ್ರಾನಿಕ್ ಸಿಟಿ ಪಿ ಇ ಎಸ್‌ ಐ ಟಿ ಕಾಲೇಜು"
-              },
-              {
-                "name": "Konappana Agarhara",
-                "name_kn": "ಕೋನಪ್ಪನ ಅಗ್ರಹಾರ"
-              },
-              {
-                "name": "Electronic City",
-                "name_kn": "ಎಲೆಕ್ರ್ಟಾನಿಕ್‌ ಸಿಟಿ‌"
-              },
-              {
-                "name": "Veerasandra",
-                "name_kn": "ವೀರಸಂದ್ರ"
-              },
-              {
-                "name": "Huskur Gate",
-                "name_kn": "ಹುಸ್ಕೂರ್‌ ಗೇಟ್"
-              },
-              {
-                "name": "SFS High School Hebbagodi",
-                "name_kn": "ಎಸ್ಎಫ್ಎಸ್ ಹೈ ಸ್ಕೂಲ್ ಹೆಬ್ಬಗೋಡಿ"
-              },
-              {
-                "name": "Hebbagodi",
-                "name_kn": "ಹೆಬ್ಬಗೋಡಿ"
-              },
-              {
-                "name": "Bommasandra",
-                "name_kn": "ಬೊಮ್ಮಸಂದ್ರ"
-              },
-              {
-                "name": "BTL College",
-                "name_kn": "ಬಿಟಿಎಲ್‌ ಕಾಲೇಜು"
-              },
-              {
-                "name": "Hennagara Gate",
-                "name_kn": "ಹೆನ್ನಾಗರ ಗೇಟ್"
-              },
-              {
-                "name": "Chandapura",
-                "name_kn": "ಚಂದಾಪುರ"
-              },
-              {
-                "name": "Hale Chandapura",
-                "name_kn": "ಹಳೇ ಚಂದಾಪುರ"
-              },
-              {
-                "name": "Tirumagondanahalli",
-                "name_kn": "ತಿರುಮಗೊಂಡನಹಳ್ಳಿ"
-              },
-              {
-                "name": "Neraluru Gate",
-                "name_kn": "ನೆರಳೂರು ಗೇಟ್"
-              },
-              {
-                "name": "Guddahatti Gate",
-                "name_kn": "ಗುಡ್ಡಹಟ್ಟಿ ಗೇಟ್"
-              },
-              {
-                "name": "Guestline Hotel",
-                "name_kn": "ಗೆಸ್ಟ್ ಲೈನ್‌ ಹೋಟೆಲ್"
-              },
-              {
-                "name": "Yadavanahalli",
-                "name_kn": "ಯಡವನಹಳ್ಳಿ"
-              },
-              {
-                "name": "Attibele Bus Stand",
-                "name_kn": "ಅತ್ತಿಬೆಲೆ ಬಸ್‌ ನಿಲ್ಧಾಣ"
-              }
-            ]
-          },
-          {
             "Route": "V-360B",
             "Destination": "Attibele",
             "Via": "Electronics City",
@@ -14842,20 +14658,20 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          77.57161834984568,
-          12.97813301274626
+          77.57258184391229,
+          12.977571179038927
         ]
       },
       "properties": {
-        "Platform": "30",
-        "Color": "#00B9FF",
+        "Platform": "32",
+        "Color": "#5359E0",
         "Routes": [
           {
             "Route": "KIA9",
             "Destination": "Airport",
             "Via": "Hebbala",
             "Area": "Kempegowda International Airport",
-            "PlatformNumber": "30",
+            "PlatformNumber": "32",
             "KannadaDestination": "ವಿಮಾನ ನಿಲ್ದಾಣ",
             "KannadaArea": "ಕೆಂಪೇಗೌಡ ಅಂತರಾಷ್ಟ್ರೀಯ ವಿಮಾನ ನಿಲ್ದಾಣ",
             "KannadaVia": "ಹೆಬ್ಬಾಳ",
@@ -14963,814 +14779,6 @@
               {
                 "name": "Kempegowda International Airport",
                 "name_kn": "ಕೆಂಪೇಗೌಡ ಅಂತರಾಷ್ಟ್ರೀಯ ವಿಮಾನ ನಿಲ್ದಾಣ"
-              }
-            ]
-          },
-          {
-            "Route": "332A",
-            "Destination": "Balagere",
-            "Via": "Varthur",
-            "Area": "Marathahalli",
-            "PlatformNumber": "30",
-            "KannadaDestination": "ಬಳಗೆರೆ",
-            "KannadaArea": "ಮಾರತಹಳ್ಳಿ",
-            "KannadaVia": "ವರ್ತೂರು",
-            "Stops": [
-              {
-                "name": "Kempegowda Bus Station",
-                "name_kn": "ಕೆಂಪೇಗೌಡ ಬಸ್ ನಿಲ್ದಾಣ"
-              },
-              {
-                "name": "Maharani College",
-                "name_kn": "ಮಹಾರಾಣಿ ಕಾಲೇಜ್"
-              },
-              {
-                "name": "KR Circle",
-                "name_kn": "ಕೆ ಆರ್‌ ವೃತ್ತ"
-              },
-              {
-                "name": "St Marthas Hospital",
-                "name_kn": "ಸೆಂಟ್ ಮಾರ್ಥಸ್ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Corporation",
-                "name_kn": "ಕಾರ್ಪೊರೇಷನ್"
-              },
-              {
-                "name": "St Josephs Indian School/ Malya Hospital",
-                "name_kn": "ಸೆಂಟ್ ಜೋಸೆಫ್ ಇಂಡಿಯನ್ ಶಾಲೆ/ ಮಲ್ಯ ಆಸ್ಫತ್ರೆ"
-              },
-              {
-                "name": "Richmond Circle",
-                "name_kn": "ರಿಚ್ಮಂಡ್‌ ವೃತ್ತ"
-              },
-              {
-                "name": "St Joseph College",
-                "name_kn": "ಸೆಂಟ್‌ ಜೋಸೆಫ್‌ ಕಾಲೇಜ್"
-              },
-              {
-                "name": "Mayohall",
-                "name_kn": "ಮೆಯೋಹಾಲ್"
-              },
-              {
-                "name": "Hosmat Hospital",
-                "name_kn": "ಹಾಸ್‌ ಮ್ಯಾಟ್‌ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Military Accounts Office",
-                "name_kn": "ಮಿಲಿಟರಿ ಲೆಕ್ಕಪತ್ರಗಳ ಕಛೇರಿ"
-              },
-              {
-                "name": "Commando Hospital",
-                "name_kn": "ಕಮಾಂಡೋ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Domlur",
-                "name_kn": "ದೊಮ್ಮಲೂರು"
-              },
-              {
-                "name": "Domlur Flyover",
-                "name_kn": "ದೊಮ್ಮಲೂರು ಮೇಲು ಸೇತುವೆ"
-              },
-              {
-                "name": "Kodihalli",
-                "name_kn": "ಕೋಡಿಹಳ್ಳಿ"
-              },
-              {
-                "name": "NAL/Manipal Hospital",
-                "name_kn": "ಎನ್ ಎ ಎಲ್/ ಮಣಿಪಾಲ್‌ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Murugeshpalya",
-                "name_kn": "ಮುರುಗೇಶಪಾಳ್ಯ"
-              },
-              {
-                "name": "Konena Agrahara",
-                "name_kn": "ಕೋನೇನ ಅಗ್ರಹಾರ"
-              },
-              {
-                "name": "HAL Main Gate",
-                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಮುಖ್ಯದ್ವಾರ"
-              },
-              {
-                "name": "HAL Admin Gate",
-                "name_kn": "HAL Admin Gate"
-              },
-              {
-                "name": "Helicopter Division",
-                "name_kn": "ಹೆಲಿಕಾಪ್ಟರ್‌ ಡಿವಿಜನ್"
-              },
-              {
-                "name": "HAL Kalyana Mantap",
-                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಕಲ್ಯಾಣ ಮಂಟಪ"
-              },
-              {
-                "name": "Yamalur Cross",
-                "name_kn": "ಯಮಲೂರು ಕ್ರಾಸ್"
-              },
-              {
-                "name": "Marathahalli",
-                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ"
-              },
-              {
-                "name": "Marathahalli Bridge",
-                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ ಬ್ರಿಡ್ಜ್"
-              },
-              {
-                "name": "Munnekolalu Cross (Spice Garden)",
-                "name_kn": "Munnekolalu Cross (Spice Garden)"
-              },
-              {
-                "name": "Kundalahalli Gate",
-                "name_kn": "ಕುಂದಲಹಳ್ಳಿ ಗೇಟ್"
-              },
-              {
-                "name": "Thubarahalli",
-                "name_kn": "ತೂಬರಹಳ್ಳಿ"
-              },
-              {
-                "name": "Siddapura",
-                "name_kn": "ಸಿದ್ದಾಪುರ"
-              },
-              {
-                "name": "Ramagondanahalli",
-                "name_kn": "ರಾಮಗೊಂಡನಹಳ್ಳಹಲ್ಲಿ"
-              },
-              {
-                "name": "Varthur Kodi",
-                "name_kn": "ವರ್ತೂರು ಕೋಡಿ"
-              },
-              {
-                "name": "Varthuru Govt College",
-                "name_kn": "ವರ್ತೂರು ಸರ್ಕಾರಿ ಕಾಲೇಜ್"
-              },
-              {
-                "name": "Varthuru",
-                "name_kn": "ವರ್ತೂರು"
-              },
-              {
-                "name": "Varthuru Police Station",
-                "name_kn": "ವರ್ತೂರು  ಆರಕ್ಷಕ ಠಾಣೆ"
-              },
-              {
-                "name": "Balagere",
-                "name_kn": "ಬಳಗೆರೆ"
-              }
-            ]
-          },
-          {
-            "Route": "333C",
-            "Destination": "Basavanagara",
-            "Via": "Domlur",
-            "Area": "Marathahalli",
-            "PlatformNumber": "30",
-            "KannadaDestination": "ಬಸವನಗರ",
-            "KannadaArea": "ಮಾರತಹಳ್ಳಿ",
-            "KannadaVia": "ದೊಮ್ಮಲೂರು",
-            "Stops": [
-              {
-                "name": "Kempegowda Bus Station",
-                "name_kn": "ಕೆಂಪೇಗೌಡ ಬಸ್ ನಿಲ್ದಾಣ"
-              },
-              {
-                "name": "Maharani College",
-                "name_kn": "ಮಹಾರಾಣಿ ಕಾಲೇಜ್"
-              },
-              {
-                "name": "KR Circle",
-                "name_kn": "ಕೆ ಆರ್‌ ವೃತ್ತ"
-              },
-              {
-                "name": "St Marthas Hospital",
-                "name_kn": "ಸೆಂಟ್ ಮಾರ್ಥಸ್ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Corporation",
-                "name_kn": "ಕಾರ್ಪೊರೇಷನ್"
-              },
-              {
-                "name": "St Josephs Indian School/ Malya Hospital",
-                "name_kn": "ಸೆಂಟ್ ಜೋಸೆಫ್ ಇಂಡಿಯನ್ ಶಾಲೆ/ ಮಲ್ಯ ಆಸ್ಫತ್ರೆ"
-              },
-              {
-                "name": "Richmond Circle",
-                "name_kn": "ರಿಚ್ಮಂಡ್‌ ವೃತ್ತ"
-              },
-              {
-                "name": "St Joseph College",
-                "name_kn": "ಸೆಂಟ್‌ ಜೋಸೆಫ್‌ ಕಾಲೇಜ್"
-              },
-              {
-                "name": "Mayohall",
-                "name_kn": "ಮೆಯೋಹಾಲ್"
-              },
-              {
-                "name": "Hosmat Hospital",
-                "name_kn": "ಹಾಸ್‌ ಮ್ಯಾಟ್‌ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Military Accounts Office",
-                "name_kn": "ಮಿಲಿಟರಿ ಲೆಕ್ಕಪತ್ರಗಳ ಕಛೇರಿ"
-              },
-              {
-                "name": "Commando Hospital",
-                "name_kn": "ಕಮಾಂಡೋ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Domlur",
-                "name_kn": "ದೊಮ್ಮಲೂರು"
-              },
-              {
-                "name": "Domlur Flyover",
-                "name_kn": "ದೊಮ್ಮಲೂರು ಮೇಲು ಸೇತುವೆ"
-              },
-              {
-                "name": "Kodihalli",
-                "name_kn": "ಕೋಡಿಹಳ್ಳಿ"
-              },
-              {
-                "name": "NAL/Manipal Hospital",
-                "name_kn": "ಎನ್ ಎ ಎಲ್/ ಮಣಿಪಾಲ್‌ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Murugeshpalya",
-                "name_kn": "ಮುರುಗೇಶಪಾಳ್ಯ"
-              },
-              {
-                "name": "Konena Agrahara",
-                "name_kn": "ಕೋನೇನ ಅಗ್ರಹಾರ"
-              },
-              {
-                "name": "HAL Main Gate",
-                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಮುಖ್ಯದ್ವಾರ"
-              },
-              {
-                "name": "Helicopter Division",
-                "name_kn": "ಹೆಲಿಕಾಪ್ಟರ್‌ ಡಿವಿಜನ್"
-              },
-              {
-                "name": "Ramesh Nagara Cross",
-                "name_kn": "ರಮೇಶ್ ನಗರ ಕ್ರಾಸ್"
-              },
-              {
-                "name": "Rameshnagara",
-                "name_kn": "ರಮೇಶನಗರ"
-              },
-              {
-                "name": "Basavanagara",
-                "name_kn": "ಬಸವನಗರ"
-              }
-            ]
-          },
-          {
-            "Route": "329H",
-            "Destination": "Bellikere",
-            "Via": "Varthur",
-            "Area": "Marathahalli",
-            "PlatformNumber": "30",
-            "KannadaDestination": "ಬೆಳ್ಳಿಕೆರೆ",
-            "KannadaArea": "ಮಾರತಹಳ್ಳಿ",
-            "KannadaVia": "ವರ್ತೂರು",
-            "Stops": [
-              {
-                "name": "Kempegowda Bus Station",
-                "name_kn": "ಕೆಂಪೇಗೌಡ ಬಸ್ ನಿಲ್ದಾಣ"
-              },
-              {
-                "name": "Maharani College",
-                "name_kn": "ಮಹಾರಾಣಿ ಕಾಲೇಜ್"
-              },
-              {
-                "name": "KR Circle",
-                "name_kn": "ಕೆ ಆರ್‌ ವೃತ್ತ"
-              },
-              {
-                "name": "St Marthas Hospital",
-                "name_kn": "ಸೆಂಟ್ ಮಾರ್ಥಸ್ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Corporation",
-                "name_kn": "ಕಾರ್ಪೊರೇಷನ್"
-              },
-              {
-                "name": "St Josephs Indian School/ Malya Hospital",
-                "name_kn": "ಸೆಂಟ್ ಜೋಸೆಫ್ ಇಂಡಿಯನ್ ಶಾಲೆ/ ಮಲ್ಯ ಆಸ್ಫತ್ರೆ"
-              },
-              {
-                "name": "Richmond Circle",
-                "name_kn": "ರಿಚ್ಮಂಡ್‌ ವೃತ್ತ"
-              },
-              {
-                "name": "St Joseph College",
-                "name_kn": "ಸೆಂಟ್‌ ಜೋಸೆಫ್‌ ಕಾಲೇಜ್"
-              },
-              {
-                "name": "Mayohall",
-                "name_kn": "ಮೆಯೋಹಾಲ್"
-              },
-              {
-                "name": "Hosmat Hospital",
-                "name_kn": "ಹಾಸ್‌ ಮ್ಯಾಟ್‌ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Military Accounts Office",
-                "name_kn": "ಮಿಲಿಟರಿ ಲೆಕ್ಕಪತ್ರಗಳ ಕಛೇರಿ"
-              },
-              {
-                "name": "Commando Hospital",
-                "name_kn": "ಕಮಾಂಡೋ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Domlur",
-                "name_kn": "ದೊಮ್ಮಲೂರು"
-              },
-              {
-                "name": "Domlur Flyover",
-                "name_kn": "ದೊಮ್ಮಲೂರು ಮೇಲು ಸೇತುವೆ"
-              },
-              {
-                "name": "Kodihalli",
-                "name_kn": "ಕೋಡಿಹಳ್ಳಿ"
-              },
-              {
-                "name": "NAL/Manipal Hospital",
-                "name_kn": "ಎನ್ ಎ ಎಲ್/ ಮಣಿಪಾಲ್‌ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Murugeshpalya",
-                "name_kn": "ಮುರುಗೇಶಪಾಳ್ಯ"
-              },
-              {
-                "name": "Konena Agrahara",
-                "name_kn": "ಕೋನೇನ ಅಗ್ರಹಾರ"
-              },
-              {
-                "name": "HAL Main Gate",
-                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಮುಖ್ಯದ್ವಾರ"
-              },
-              {
-                "name": "HAL Admin Gate",
-                "name_kn": "HAL Admin Gate"
-              },
-              {
-                "name": "Helicopter Division",
-                "name_kn": "ಹೆಲಿಕಾಪ್ಟರ್‌ ಡಿವಿಜನ್"
-              },
-              {
-                "name": "HAL Kalyana Mantap",
-                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಕಲ್ಯಾಣ ಮಂಟಪ"
-              },
-              {
-                "name": "Yamalur Cross",
-                "name_kn": "ಯಮಲೂರು ಕ್ರಾಸ್"
-              },
-              {
-                "name": "Marathahalli",
-                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ"
-              },
-              {
-                "name": "Marathahalli Bridge",
-                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ ಬ್ರಿಡ್ಜ್"
-              },
-              {
-                "name": "Munnekolalu Cross (Spice Garden)",
-                "name_kn": "Munnekolalu Cross (Spice Garden)"
-              },
-              {
-                "name": "Kundalahalli Gate",
-                "name_kn": "ಕುಂದಲಹಳ್ಳಿ ಗೇಟ್"
-              },
-              {
-                "name": "Thubarahalli",
-                "name_kn": "ತೂಬರಹಳ್ಳಿ"
-              },
-              {
-                "name": "Siddapura",
-                "name_kn": "ಸಿದ್ದಾಪುರ"
-              },
-              {
-                "name": "Ramagondanahalli",
-                "name_kn": "ರಾಮಗೊಂಡನಹಳ್ಳಹಲ್ಲಿ"
-              },
-              {
-                "name": "Varthur Kodi",
-                "name_kn": "ವರ್ತೂರು ಕೋಡಿ"
-              },
-              {
-                "name": "Varthuru Govt College",
-                "name_kn": "ವರ್ತೂರು ಸರ್ಕಾರಿ ಕಾಲೇಜ್"
-              },
-              {
-                "name": "Sorahunse Gate",
-                "name_kn": "ಸೊರಹುನ್ಸೆ ಗೇಟ್"
-              },
-              {
-                "name": "Janthamane",
-                "name_kn": "ಜನತಾಮನೆ"
-              },
-              {
-                "name": "Madhura Nagara Hostel",
-                "name_kn": "ಮಧುರ ನಗರ ಹಾಸ್ಟೆಲ್"
-              },
-              {
-                "name": "Madhura Nagara",
-                "name_kn": "ಮಧುರ ನಗರ"
-              },
-              {
-                "name": "Valepura Cross",
-                "name_kn": "ವಾಲೇಪುರ ಕ್ರಾಸ್"
-              },
-              {
-                "name": "Valepura Gate",
-                "name_kn": "ವಾಲೇಪುರ ಗೇಟ್"
-              },
-              {
-                "name": "Gullakaipura",
-                "name_kn": "ಗುಳ್ಳಕಿಪುರ"
-              },
-              {
-                "name": "Muthsandra",
-                "name_kn": "ಮುತ್ಸಂದ್ರ"
-              },
-              {
-                "name": "Bellikere Cross",
-                "name_kn": "ಬೆಳ್ಳಿಕೆರೆ ಕ್ರಾಸ್"
-              },
-              {
-                "name": "Bellikere",
-                "name_kn": "ಬೆಳ್ಳಿಕೆರೆ"
-              }
-            ]
-          },
-          {
-            "Route": "KBS1I",
-            "Destination": "Kadugodi Bus Station",
-            "Via": "Kundalahalli",
-            "Area": "Marathahalli",
-            "PlatformNumber": "30",
-            "KannadaDestination": "ಕಾಡುಗೋಡಿ ಬಸ್ ನಿಲ್ದಾಣ",
-            "KannadaArea": "ಮಾರತಹಳ್ಳಿ",
-            "KannadaVia": "ಕುಂದಲಹಳ್ಳಿ",
-            "Stops": [
-              {
-                "name": "Kempegowda Bus Station",
-                "name_kn": "ಕೆಂಪೇಗೌಡ ಬಸ್ ನಿಲ್ದಾಣ"
-              },
-              {
-                "name": "Maharani College",
-                "name_kn": "ಮಹಾರಾಣಿ ಕಾಲೇಜ್"
-              },
-              {
-                "name": "KR Circle",
-                "name_kn": "ಕೆ ಆರ್‌ ವೃತ್ತ"
-              },
-              {
-                "name": "St Marthas Hospital",
-                "name_kn": "ಸೆಂಟ್ ಮಾರ್ಥಸ್ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Corporation",
-                "name_kn": "ಕಾರ್ಪೊರೇಷನ್"
-              },
-              {
-                "name": "St Josephs Indian School/ Malya Hospital",
-                "name_kn": "ಸೆಂಟ್ ಜೋಸೆಫ್ ಇಂಡಿಯನ್ ಶಾಲೆ/ ಮಲ್ಯ ಆಸ್ಫತ್ರೆ"
-              },
-              {
-                "name": "Richmond Circle",
-                "name_kn": "ರಿಚ್ಮಂಡ್‌ ವೃತ್ತ"
-              },
-              {
-                "name": "St Joseph College",
-                "name_kn": "ಸೆಂಟ್‌ ಜೋಸೆಫ್‌ ಕಾಲೇಜ್"
-              },
-              {
-                "name": "Mayohall",
-                "name_kn": "ಮೆಯೋಹಾಲ್"
-              },
-              {
-                "name": "Hosmat Hospital",
-                "name_kn": "ಹಾಸ್‌ ಮ್ಯಾಟ್‌ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Military Accounts Office",
-                "name_kn": "ಮಿಲಿಟರಿ ಲೆಕ್ಕಪತ್ರಗಳ ಕಛೇರಿ"
-              },
-              {
-                "name": "Commando Hospital",
-                "name_kn": "ಕಮಾಂಡೋ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Domlur",
-                "name_kn": "ದೊಮ್ಮಲೂರು"
-              },
-              {
-                "name": "Domlur Flyover",
-                "name_kn": "ದೊಮ್ಮಲೂರು ಮೇಲು ಸೇತುವೆ"
-              },
-              {
-                "name": "Kodihalli",
-                "name_kn": "ಕೋಡಿಹಳ್ಳಿ"
-              },
-              {
-                "name": "NAL/Manipal Hospital",
-                "name_kn": "ಎನ್ ಎ ಎಲ್/ ಮಣಿಪಾಲ್‌ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Murugeshpalya",
-                "name_kn": "ಮುರುಗೇಶಪಾಳ್ಯ"
-              },
-              {
-                "name": "Konena Agrahara",
-                "name_kn": "ಕೋನೇನ ಅಗ್ರಹಾರ"
-              },
-              {
-                "name": "HAL Main Gate",
-                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಮುಖ್ಯದ್ವಾರ"
-              },
-              {
-                "name": "HAL Admin Gate",
-                "name_kn": "HAL Admin Gate"
-              },
-              {
-                "name": "Helicopter Division",
-                "name_kn": "ಹೆಲಿಕಾಪ್ಟರ್‌ ಡಿವಿಜನ್"
-              },
-              {
-                "name": "HAL Kalyana Mantap",
-                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಕಲ್ಯಾಣ ಮಂಟಪ"
-              },
-              {
-                "name": "Yamalur Cross",
-                "name_kn": "ಯಮಲೂರು ಕ್ರಾಸ್"
-              },
-              {
-                "name": "Marathahalli",
-                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ"
-              },
-              {
-                "name": "Marathahalli Bridge",
-                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ ಬ್ರಿಡ್ಜ್"
-              },
-              {
-                "name": "Munnekolalu Cross (Spice Garden)",
-                "name_kn": "Munnekolalu Cross (Spice Garden)"
-              },
-              {
-                "name": "Kundalahalli Gate",
-                "name_kn": "ಕುಂದಲಹಳ್ಳಿ ಗೇಟ್"
-              },
-              {
-                "name": "Kundalahalli",
-                "name_kn": "ಕುಂದಲಹಳ್ಳಿ"
-              },
-              {
-                "name": "BEML Layout Gate",
-                "name_kn": "ಬಿಇಎಂಎಲ್ ಲೇಔಟ್ ಗೇಟ್"
-              },
-              {
-                "name": "AECS Layout Cross",
-                "name_kn": "ಎಇಸಿಎಸ್ ಬಡಾವಣೆ ಕ್ರಾಸ್"
-              },
-              {
-                "name": "CMRIT College",
-                "name_kn": "ಸಿಎಂಆರ್‌ಐಟಿ ಕಾಲೇಜು"
-              },
-              {
-                "name": "Kundalahalli Colony",
-                "name_kn": "ಕುಂದಲಹಳ್ಳಿ ಕಾಲೋನಿ"
-              },
-              {
-                "name": "Graphite India",
-                "name_kn": "ಗ್ರಾಫೈಟ್‌ ಇಂಡಿಯಾ"
-              },
-              {
-                "name": "SAP Labs",
-                "name_kn": "SAP Labs"
-              },
-              {
-                "name": "Kundalahalli Metro Station",
-                "name_kn": "Kundalahalli Metro Station"
-              },
-              {
-                "name": "I Gate",
-                "name_kn": "ಐ ಗೇಟ್"
-              },
-              {
-                "name": "KTPO",
-                "name_kn": "ಕೆಟಿಪಿಒ"
-              },
-              {
-                "name": "White Field Bus Station (Vydehi Hospital)",
-                "name_kn": "White Field Bus Station (Vydehi Hospital)"
-              },
-              {
-                "name": "Sathya Sai Hospital",
-                "name_kn": "ಸತ್ಯ ಸಾಯಿ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Big Bazzar ITPL",
-                "name_kn": "ಬಿಗ್ ಬಜಾರ್‌ ಐಟಿಪಿಎಲ್"
-              },
-              {
-                "name": "Pattandur Agrahara Gate",
-                "name_kn": "ಪಟ್ಟಂದೂರು ಅಗ್ರಹಾರ ಗೇಟ್‌"
-              },
-              {
-                "name": "ITPL",
-                "name_kn": "ಐಟಿಪಿಎಲ್"
-              },
-              {
-                "name": "GR Tech Park ITPL",
-                "name_kn": "ಜಿಆರ್ ಟೆಕ್‌ ಪಾರ್ಕ್‌ ಐಟಿಪಿಎಲ್"
-              },
-              {
-                "name": "BPL",
-                "name_kn": "ಬಿ ಪಿ ಎಲ್‌"
-              },
-              {
-                "name": "Hope Farm",
-                "name_kn": "ಹೋಪ್‌ ಫಾರ್ಮ್"
-              },
-              {
-                "name": "Kadugodi Bridge",
-                "name_kn": "ಕಾಡುಗೋಡಿ ಬ್ರಿಡ್ಜ್"
-              },
-              {
-                "name": "Kadugodi Bus Station",
-                "name_kn": "ಕಾಡುಗೋಡಿ ಬಸ್‌ ನಿಲ್ದಾಣ"
-              }
-            ]
-          },
-          {
-            "Route": "KBS1K",
-            "Destination": "Kadugodi Bus Station",
-            "Via": "Whitefield",
-            "Area": "Marathahalli",
-            "PlatformNumber": "30",
-            "KannadaDestination": "ಕಾಡುಗೋಡಿ ಬಸ್ ನಿಲ್ದಾಣ",
-            "KannadaArea": "ಮಾರತಹಳ್ಳಿ",
-            "KannadaVia": "ವೈಟ್‌ಫೀಲ್ಡ್",
-            "Stops": [
-              {
-                "name": "Kempegowda Bus Station",
-                "name_kn": "ಕೆಂಪೇಗೌಡ ಬಸ್ ನಿಲ್ದಾಣ"
-              },
-              {
-                "name": "Maharani College",
-                "name_kn": "ಮಹಾರಾಣಿ ಕಾಲೇಜ್"
-              },
-              {
-                "name": "KR Circle",
-                "name_kn": "ಕೆ ಆರ್‌ ವೃತ್ತ"
-              },
-              {
-                "name": "St Marthas Hospital",
-                "name_kn": "ಸೆಂಟ್ ಮಾರ್ಥಸ್ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Corporation",
-                "name_kn": "ಕಾರ್ಪೊರೇಷನ್"
-              },
-              {
-                "name": "St Josephs Indian School/ Malya Hospital",
-                "name_kn": "ಸೆಂಟ್ ಜೋಸೆಫ್ ಇಂಡಿಯನ್ ಶಾಲೆ/ ಮಲ್ಯ ಆಸ್ಫತ್ರೆ"
-              },
-              {
-                "name": "Richmond Circle",
-                "name_kn": "ರಿಚ್ಮಂಡ್‌ ವೃತ್ತ"
-              },
-              {
-                "name": "St Joseph College",
-                "name_kn": "ಸೆಂಟ್‌ ಜೋಸೆಫ್‌ ಕಾಲೇಜ್"
-              },
-              {
-                "name": "Mayohall",
-                "name_kn": "ಮೆಯೋಹಾಲ್"
-              },
-              {
-                "name": "Hosmat Hospital",
-                "name_kn": "ಹಾಸ್‌ ಮ್ಯಾಟ್‌ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Military Accounts Office",
-                "name_kn": "ಮಿಲಿಟರಿ ಲೆಕ್ಕಪತ್ರಗಳ ಕಛೇರಿ"
-              },
-              {
-                "name": "Commando Hospital",
-                "name_kn": "ಕಮಾಂಡೋ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Domlur",
-                "name_kn": "ದೊಮ್ಮಲೂರು"
-              },
-              {
-                "name": "Domlur Flyover",
-                "name_kn": "ದೊಮ್ಮಲೂರು ಮೇಲು ಸೇತುವೆ"
-              },
-              {
-                "name": "Kodihalli",
-                "name_kn": "ಕೋಡಿಹಳ್ಳಿ"
-              },
-              {
-                "name": "NAL/Manipal Hospital",
-                "name_kn": "ಎನ್ ಎ ಎಲ್/ ಮಣಿಪಾಲ್‌ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Murugeshpalya",
-                "name_kn": "ಮುರುಗೇಶಪಾಳ್ಯ"
-              },
-              {
-                "name": "Konena Agrahara",
-                "name_kn": "ಕೋನೇನ ಅಗ್ರಹಾರ"
-              },
-              {
-                "name": "HAL Main Gate",
-                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಮುಖ್ಯದ್ವಾರ"
-              },
-              {
-                "name": "HAL Admin Gate",
-                "name_kn": "HAL Admin Gate"
-              },
-              {
-                "name": "Helicopter Division",
-                "name_kn": "ಹೆಲಿಕಾಪ್ಟರ್‌ ಡಿವಿಜನ್"
-              },
-              {
-                "name": "HAL Kalyana Mantap",
-                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಕಲ್ಯಾಣ ಮಂಟಪ"
-              },
-              {
-                "name": "Yamalur Cross",
-                "name_kn": "ಯಮಲೂರು ಕ್ರಾಸ್"
-              },
-              {
-                "name": "Marathahalli",
-                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ"
-              },
-              {
-                "name": "Marathahalli Bridge",
-                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ ಬ್ರಿಡ್ಜ್"
-              },
-              {
-                "name": "Munnekolalu Cross (Spice Garden)",
-                "name_kn": "Munnekolalu Cross (Spice Garden)"
-              },
-              {
-                "name": "Kundalahalli Gate",
-                "name_kn": "ಕುಂದಲಹಳ್ಳಿ ಗೇಟ್"
-              },
-              {
-                "name": "Thubarahalli",
-                "name_kn": "ತೂಬರಹಳ್ಳಿ"
-              },
-              {
-                "name": "Siddapura",
-                "name_kn": "ಸಿದ್ದಾಪುರ"
-              },
-              {
-                "name": "Ramagondanahalli",
-                "name_kn": "ರಾಮಗೊಂಡನಹಳ್ಳಹಲ್ಲಿ"
-              },
-              {
-                "name": "Varthur kodi",
-                "name_kn": "ವರ್ತೂರು ಕೋಡಿ"
-              },
-              {
-                "name": "Forum Mall",
-                "name_kn": "ಫೋರಂ‌ ಮಾಲ್"
-              },
-              {
-                "name": "Brooke Bond",
-                "name_kn": "ಬ್ರೂಕ್ ಬಾಂಡ್"
-              },
-              {
-                "name": "White Field Post Office",
-                "name_kn": "ವೈಟ್‌ ಫೀಲ್ಡ್‌ ಅಂಚೆ ಕಛೇರಿ"
-              },
-              {
-                "name": "Sai Baba General Hospital",
-                "name_kn": "ಸಾಯಿ ಬಾಬಾ ಜನರಲ್‌ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Munish Singh Hospital",
-                "name_kn": "ಮುನೀಶ್‌ ಸಿಂಗ್‌ ಆಸ್ಪತ್ರೆ"
-              },
-              {
-                "name": "Coffee Day Hope Farm",
-                "name_kn": "ಕಾಫಿ ಡೇ ಹೋಪ್ ಫಾರ್ಮ್"
-              },
-              {
-                "name": "Hope Farm",
-                "name_kn": "ಹೋಪ್‌ ಫಾರ್ಮ್"
-              },
-              {
-                "name": "Kadugodi Bridge",
-                "name_kn": "ಕಾಡುಗೋಡಿ ಬ್ರಿಡ್ಜ್"
-              },
-              {
-                "name": "Kadugodi Bus Station",
-                "name_kn": "ಕಾಡುಗೋಡಿ ಬಸ್‌ ನಿಲ್ದಾಣ"
               }
             ]
           }
@@ -18559,6 +17567,830 @@
               {
                 "name": "Thigalarapalya",
                 "name_kn": "ತಿಗಳರಪಾಳ್ಯ"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.57161834984568,
+          12.97813301274626
+        ]
+      },
+      "properties": {
+        "Platform": "30",
+        "Color": "#00B9FF",
+        "Routes": [
+          {
+            "Route": "332A",
+            "Destination": "Balagere",
+            "Via": "Varthur",
+            "Area": "Marathahalli",
+            "PlatformNumber": "30",
+            "KannadaDestination": "ಬಳಗೆರೆ",
+            "KannadaArea": "ಮಾರತಹಳ್ಳಿ",
+            "KannadaVia": "ವರ್ತೂರು",
+            "Stops": [
+              {
+                "name": "Kempegowda Bus Station",
+                "name_kn": "ಕೆಂಪೇಗೌಡ ಬಸ್ ನಿಲ್ದಾಣ"
+              },
+              {
+                "name": "Maharani College",
+                "name_kn": "ಮಹಾರಾಣಿ ಕಾಲೇಜ್"
+              },
+              {
+                "name": "KR Circle",
+                "name_kn": "ಕೆ ಆರ್‌ ವೃತ್ತ"
+              },
+              {
+                "name": "St Marthas Hospital",
+                "name_kn": "ಸೆಂಟ್ ಮಾರ್ಥಸ್ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Corporation",
+                "name_kn": "ಕಾರ್ಪೊರೇಷನ್"
+              },
+              {
+                "name": "St Josephs Indian School/ Malya Hospital",
+                "name_kn": "ಸೆಂಟ್ ಜೋಸೆಫ್ ಇಂಡಿಯನ್ ಶಾಲೆ/ ಮಲ್ಯ ಆಸ್ಫತ್ರೆ"
+              },
+              {
+                "name": "Richmond Circle",
+                "name_kn": "ರಿಚ್ಮಂಡ್‌ ವೃತ್ತ"
+              },
+              {
+                "name": "St Joseph College",
+                "name_kn": "ಸೆಂಟ್‌ ಜೋಸೆಫ್‌ ಕಾಲೇಜ್"
+              },
+              {
+                "name": "Mayohall",
+                "name_kn": "ಮೆಯೋಹಾಲ್"
+              },
+              {
+                "name": "Hosmat Hospital",
+                "name_kn": "ಹಾಸ್‌ ಮ್ಯಾಟ್‌ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Military Accounts Office",
+                "name_kn": "ಮಿಲಿಟರಿ ಲೆಕ್ಕಪತ್ರಗಳ ಕಛೇರಿ"
+              },
+              {
+                "name": "Commando Hospital",
+                "name_kn": "ಕಮಾಂಡೋ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Domlur",
+                "name_kn": "ದೊಮ್ಮಲೂರು"
+              },
+              {
+                "name": "Domlur Flyover",
+                "name_kn": "ದೊಮ್ಮಲೂರು ಮೇಲು ಸೇತುವೆ"
+              },
+              {
+                "name": "Kodihalli",
+                "name_kn": "ಕೋಡಿಹಳ್ಳಿ"
+              },
+              {
+                "name": "NAL/Manipal Hospital",
+                "name_kn": "ಎನ್ ಎ ಎಲ್/ ಮಣಿಪಾಲ್‌ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Murugeshpalya",
+                "name_kn": "ಮುರುಗೇಶಪಾಳ್ಯ"
+              },
+              {
+                "name": "Konena Agrahara",
+                "name_kn": "ಕೋನೇನ ಅಗ್ರಹಾರ"
+              },
+              {
+                "name": "HAL Main Gate",
+                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಮುಖ್ಯದ್ವಾರ"
+              },
+              {
+                "name": "HAL Admin Gate",
+                "name_kn": "HAL Admin Gate"
+              },
+              {
+                "name": "Helicopter Division",
+                "name_kn": "ಹೆಲಿಕಾಪ್ಟರ್‌ ಡಿವಿಜನ್"
+              },
+              {
+                "name": "HAL Kalyana Mantap",
+                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಕಲ್ಯಾಣ ಮಂಟಪ"
+              },
+              {
+                "name": "Yamalur Cross",
+                "name_kn": "ಯಮಲೂರು ಕ್ರಾಸ್"
+              },
+              {
+                "name": "Marathahalli",
+                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ"
+              },
+              {
+                "name": "Marathahalli Bridge",
+                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ ಬ್ರಿಡ್ಜ್"
+              },
+              {
+                "name": "Munnekolalu Cross (Spice Garden)",
+                "name_kn": "Munnekolalu Cross (Spice Garden)"
+              },
+              {
+                "name": "Kundalahalli Gate",
+                "name_kn": "ಕುಂದಲಹಳ್ಳಿ ಗೇಟ್"
+              },
+              {
+                "name": "Thubarahalli",
+                "name_kn": "ತೂಬರಹಳ್ಳಿ"
+              },
+              {
+                "name": "Siddapura",
+                "name_kn": "ಸಿದ್ದಾಪುರ"
+              },
+              {
+                "name": "Ramagondanahalli",
+                "name_kn": "ರಾಮಗೊಂಡನಹಳ್ಳಹಲ್ಲಿ"
+              },
+              {
+                "name": "Varthur Kodi",
+                "name_kn": "ವರ್ತೂರು ಕೋಡಿ"
+              },
+              {
+                "name": "Varthuru Govt College",
+                "name_kn": "ವರ್ತೂರು ಸರ್ಕಾರಿ ಕಾಲೇಜ್"
+              },
+              {
+                "name": "Varthuru",
+                "name_kn": "ವರ್ತೂರು"
+              },
+              {
+                "name": "Varthuru Police Station",
+                "name_kn": "ವರ್ತೂರು  ಆರಕ್ಷಕ ಠಾಣೆ"
+              },
+              {
+                "name": "Balagere",
+                "name_kn": "ಬಳಗೆರೆ"
+              }
+            ]
+          },
+          {
+            "Route": "333C",
+            "Destination": "Basavanagara",
+            "Via": "Domlur",
+            "Area": "Marathahalli",
+            "PlatformNumber": "30",
+            "KannadaDestination": "ಬಸವನಗರ",
+            "KannadaArea": "ಮಾರತಹಳ್ಳಿ",
+            "KannadaVia": "ದೊಮ್ಮಲೂರು",
+            "Stops": [
+              {
+                "name": "Kempegowda Bus Station",
+                "name_kn": "ಕೆಂಪೇಗೌಡ ಬಸ್ ನಿಲ್ದಾಣ"
+              },
+              {
+                "name": "Maharani College",
+                "name_kn": "ಮಹಾರಾಣಿ ಕಾಲೇಜ್"
+              },
+              {
+                "name": "KR Circle",
+                "name_kn": "ಕೆ ಆರ್‌ ವೃತ್ತ"
+              },
+              {
+                "name": "St Marthas Hospital",
+                "name_kn": "ಸೆಂಟ್ ಮಾರ್ಥಸ್ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Corporation",
+                "name_kn": "ಕಾರ್ಪೊರೇಷನ್"
+              },
+              {
+                "name": "St Josephs Indian School/ Malya Hospital",
+                "name_kn": "ಸೆಂಟ್ ಜೋಸೆಫ್ ಇಂಡಿಯನ್ ಶಾಲೆ/ ಮಲ್ಯ ಆಸ್ಫತ್ರೆ"
+              },
+              {
+                "name": "Richmond Circle",
+                "name_kn": "ರಿಚ್ಮಂಡ್‌ ವೃತ್ತ"
+              },
+              {
+                "name": "St Joseph College",
+                "name_kn": "ಸೆಂಟ್‌ ಜೋಸೆಫ್‌ ಕಾಲೇಜ್"
+              },
+              {
+                "name": "Mayohall",
+                "name_kn": "ಮೆಯೋಹಾಲ್"
+              },
+              {
+                "name": "Hosmat Hospital",
+                "name_kn": "ಹಾಸ್‌ ಮ್ಯಾಟ್‌ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Military Accounts Office",
+                "name_kn": "ಮಿಲಿಟರಿ ಲೆಕ್ಕಪತ್ರಗಳ ಕಛೇರಿ"
+              },
+              {
+                "name": "Commando Hospital",
+                "name_kn": "ಕಮಾಂಡೋ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Domlur",
+                "name_kn": "ದೊಮ್ಮಲೂರು"
+              },
+              {
+                "name": "Domlur Flyover",
+                "name_kn": "ದೊಮ್ಮಲೂರು ಮೇಲು ಸೇತುವೆ"
+              },
+              {
+                "name": "Kodihalli",
+                "name_kn": "ಕೋಡಿಹಳ್ಳಿ"
+              },
+              {
+                "name": "NAL/Manipal Hospital",
+                "name_kn": "ಎನ್ ಎ ಎಲ್/ ಮಣಿಪಾಲ್‌ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Murugeshpalya",
+                "name_kn": "ಮುರುಗೇಶಪಾಳ್ಯ"
+              },
+              {
+                "name": "Konena Agrahara",
+                "name_kn": "ಕೋನೇನ ಅಗ್ರಹಾರ"
+              },
+              {
+                "name": "HAL Main Gate",
+                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಮುಖ್ಯದ್ವಾರ"
+              },
+              {
+                "name": "Helicopter Division",
+                "name_kn": "ಹೆಲಿಕಾಪ್ಟರ್‌ ಡಿವಿಜನ್"
+              },
+              {
+                "name": "Ramesh Nagara Cross",
+                "name_kn": "ರಮೇಶ್ ನಗರ ಕ್ರಾಸ್"
+              },
+              {
+                "name": "Rameshnagara",
+                "name_kn": "ರಮೇಶನಗರ"
+              },
+              {
+                "name": "Basavanagara",
+                "name_kn": "ಬಸವನಗರ"
+              }
+            ]
+          },
+          {
+            "Route": "329H",
+            "Destination": "Bellikere",
+            "Via": "Varthur",
+            "Area": "Marathahalli",
+            "PlatformNumber": "30",
+            "KannadaDestination": "ಬೆಳ್ಳಿಕೆರೆ",
+            "KannadaArea": "ಮಾರತಹಳ್ಳಿ",
+            "KannadaVia": "ವರ್ತೂರು",
+            "Stops": [
+              {
+                "name": "Kempegowda Bus Station",
+                "name_kn": "ಕೆಂಪೇಗೌಡ ಬಸ್ ನಿಲ್ದಾಣ"
+              },
+              {
+                "name": "Maharani College",
+                "name_kn": "ಮಹಾರಾಣಿ ಕಾಲೇಜ್"
+              },
+              {
+                "name": "KR Circle",
+                "name_kn": "ಕೆ ಆರ್‌ ವೃತ್ತ"
+              },
+              {
+                "name": "St Marthas Hospital",
+                "name_kn": "ಸೆಂಟ್ ಮಾರ್ಥಸ್ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Corporation",
+                "name_kn": "ಕಾರ್ಪೊರೇಷನ್"
+              },
+              {
+                "name": "St Josephs Indian School/ Malya Hospital",
+                "name_kn": "ಸೆಂಟ್ ಜೋಸೆಫ್ ಇಂಡಿಯನ್ ಶಾಲೆ/ ಮಲ್ಯ ಆಸ್ಫತ್ರೆ"
+              },
+              {
+                "name": "Richmond Circle",
+                "name_kn": "ರಿಚ್ಮಂಡ್‌ ವೃತ್ತ"
+              },
+              {
+                "name": "St Joseph College",
+                "name_kn": "ಸೆಂಟ್‌ ಜೋಸೆಫ್‌ ಕಾಲೇಜ್"
+              },
+              {
+                "name": "Mayohall",
+                "name_kn": "ಮೆಯೋಹಾಲ್"
+              },
+              {
+                "name": "Hosmat Hospital",
+                "name_kn": "ಹಾಸ್‌ ಮ್ಯಾಟ್‌ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Military Accounts Office",
+                "name_kn": "ಮಿಲಿಟರಿ ಲೆಕ್ಕಪತ್ರಗಳ ಕಛೇರಿ"
+              },
+              {
+                "name": "Commando Hospital",
+                "name_kn": "ಕಮಾಂಡೋ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Domlur",
+                "name_kn": "ದೊಮ್ಮಲೂರು"
+              },
+              {
+                "name": "Domlur Flyover",
+                "name_kn": "ದೊಮ್ಮಲೂರು ಮೇಲು ಸೇತುವೆ"
+              },
+              {
+                "name": "Kodihalli",
+                "name_kn": "ಕೋಡಿಹಳ್ಳಿ"
+              },
+              {
+                "name": "NAL/Manipal Hospital",
+                "name_kn": "ಎನ್ ಎ ಎಲ್/ ಮಣಿಪಾಲ್‌ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Murugeshpalya",
+                "name_kn": "ಮುರುಗೇಶಪಾಳ್ಯ"
+              },
+              {
+                "name": "Konena Agrahara",
+                "name_kn": "ಕೋನೇನ ಅಗ್ರಹಾರ"
+              },
+              {
+                "name": "HAL Main Gate",
+                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಮುಖ್ಯದ್ವಾರ"
+              },
+              {
+                "name": "HAL Admin Gate",
+                "name_kn": "HAL Admin Gate"
+              },
+              {
+                "name": "Helicopter Division",
+                "name_kn": "ಹೆಲಿಕಾಪ್ಟರ್‌ ಡಿವಿಜನ್"
+              },
+              {
+                "name": "HAL Kalyana Mantap",
+                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಕಲ್ಯಾಣ ಮಂಟಪ"
+              },
+              {
+                "name": "Yamalur Cross",
+                "name_kn": "ಯಮಲೂರು ಕ್ರಾಸ್"
+              },
+              {
+                "name": "Marathahalli",
+                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ"
+              },
+              {
+                "name": "Marathahalli Bridge",
+                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ ಬ್ರಿಡ್ಜ್"
+              },
+              {
+                "name": "Munnekolalu Cross (Spice Garden)",
+                "name_kn": "Munnekolalu Cross (Spice Garden)"
+              },
+              {
+                "name": "Kundalahalli Gate",
+                "name_kn": "ಕುಂದಲಹಳ್ಳಿ ಗೇಟ್"
+              },
+              {
+                "name": "Thubarahalli",
+                "name_kn": "ತೂಬರಹಳ್ಳಿ"
+              },
+              {
+                "name": "Siddapura",
+                "name_kn": "ಸಿದ್ದಾಪುರ"
+              },
+              {
+                "name": "Ramagondanahalli",
+                "name_kn": "ರಾಮಗೊಂಡನಹಳ್ಳಹಲ್ಲಿ"
+              },
+              {
+                "name": "Varthur Kodi",
+                "name_kn": "ವರ್ತೂರು ಕೋಡಿ"
+              },
+              {
+                "name": "Varthuru Govt College",
+                "name_kn": "ವರ್ತೂರು ಸರ್ಕಾರಿ ಕಾಲೇಜ್"
+              },
+              {
+                "name": "Sorahunse Gate",
+                "name_kn": "ಸೊರಹುನ್ಸೆ ಗೇಟ್"
+              },
+              {
+                "name": "Janthamane",
+                "name_kn": "ಜನತಾಮನೆ"
+              },
+              {
+                "name": "Madhura Nagara Hostel",
+                "name_kn": "ಮಧುರ ನಗರ ಹಾಸ್ಟೆಲ್"
+              },
+              {
+                "name": "Madhura Nagara",
+                "name_kn": "ಮಧುರ ನಗರ"
+              },
+              {
+                "name": "Valepura Cross",
+                "name_kn": "ವಾಲೇಪುರ ಕ್ರಾಸ್"
+              },
+              {
+                "name": "Valepura Gate",
+                "name_kn": "ವಾಲೇಪುರ ಗೇಟ್"
+              },
+              {
+                "name": "Gullakaipura",
+                "name_kn": "ಗುಳ್ಳಕಿಪುರ"
+              },
+              {
+                "name": "Muthsandra",
+                "name_kn": "ಮುತ್ಸಂದ್ರ"
+              },
+              {
+                "name": "Bellikere Cross",
+                "name_kn": "ಬೆಳ್ಳಿಕೆರೆ ಕ್ರಾಸ್"
+              },
+              {
+                "name": "Bellikere",
+                "name_kn": "ಬೆಳ್ಳಿಕೆರೆ"
+              }
+            ]
+          },
+          {
+            "Route": "KBS1I",
+            "Destination": "Kadugodi Bus Station",
+            "Via": "Kundalahalli",
+            "Area": "Marathahalli",
+            "PlatformNumber": "30",
+            "KannadaDestination": "ಕಾಡುಗೋಡಿ ಬಸ್ ನಿಲ್ದಾಣ",
+            "KannadaArea": "ಮಾರತಹಳ್ಳಿ",
+            "KannadaVia": "ಕುಂದಲಹಳ್ಳಿ",
+            "Stops": [
+              {
+                "name": "Kempegowda Bus Station",
+                "name_kn": "ಕೆಂಪೇಗೌಡ ಬಸ್ ನಿಲ್ದಾಣ"
+              },
+              {
+                "name": "Maharani College",
+                "name_kn": "ಮಹಾರಾಣಿ ಕಾಲೇಜ್"
+              },
+              {
+                "name": "KR Circle",
+                "name_kn": "ಕೆ ಆರ್‌ ವೃತ್ತ"
+              },
+              {
+                "name": "St Marthas Hospital",
+                "name_kn": "ಸೆಂಟ್ ಮಾರ್ಥಸ್ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Corporation",
+                "name_kn": "ಕಾರ್ಪೊರೇಷನ್"
+              },
+              {
+                "name": "St Josephs Indian School/ Malya Hospital",
+                "name_kn": "ಸೆಂಟ್ ಜೋಸೆಫ್ ಇಂಡಿಯನ್ ಶಾಲೆ/ ಮಲ್ಯ ಆಸ್ಫತ್ರೆ"
+              },
+              {
+                "name": "Richmond Circle",
+                "name_kn": "ರಿಚ್ಮಂಡ್‌ ವೃತ್ತ"
+              },
+              {
+                "name": "St Joseph College",
+                "name_kn": "ಸೆಂಟ್‌ ಜೋಸೆಫ್‌ ಕಾಲೇಜ್"
+              },
+              {
+                "name": "Mayohall",
+                "name_kn": "ಮೆಯೋಹಾಲ್"
+              },
+              {
+                "name": "Hosmat Hospital",
+                "name_kn": "ಹಾಸ್‌ ಮ್ಯಾಟ್‌ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Military Accounts Office",
+                "name_kn": "ಮಿಲಿಟರಿ ಲೆಕ್ಕಪತ್ರಗಳ ಕಛೇರಿ"
+              },
+              {
+                "name": "Commando Hospital",
+                "name_kn": "ಕಮಾಂಡೋ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Domlur",
+                "name_kn": "ದೊಮ್ಮಲೂರು"
+              },
+              {
+                "name": "Domlur Flyover",
+                "name_kn": "ದೊಮ್ಮಲೂರು ಮೇಲು ಸೇತುವೆ"
+              },
+              {
+                "name": "Kodihalli",
+                "name_kn": "ಕೋಡಿಹಳ್ಳಿ"
+              },
+              {
+                "name": "NAL/Manipal Hospital",
+                "name_kn": "ಎನ್ ಎ ಎಲ್/ ಮಣಿಪಾಲ್‌ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Murugeshpalya",
+                "name_kn": "ಮುರುಗೇಶಪಾಳ್ಯ"
+              },
+              {
+                "name": "Konena Agrahara",
+                "name_kn": "ಕೋನೇನ ಅಗ್ರಹಾರ"
+              },
+              {
+                "name": "HAL Main Gate",
+                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಮುಖ್ಯದ್ವಾರ"
+              },
+              {
+                "name": "HAL Admin Gate",
+                "name_kn": "HAL Admin Gate"
+              },
+              {
+                "name": "Helicopter Division",
+                "name_kn": "ಹೆಲಿಕಾಪ್ಟರ್‌ ಡಿವಿಜನ್"
+              },
+              {
+                "name": "HAL Kalyana Mantap",
+                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಕಲ್ಯಾಣ ಮಂಟಪ"
+              },
+              {
+                "name": "Yamalur Cross",
+                "name_kn": "ಯಮಲೂರು ಕ್ರಾಸ್"
+              },
+              {
+                "name": "Marathahalli",
+                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ"
+              },
+              {
+                "name": "Marathahalli Bridge",
+                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ ಬ್ರಿಡ್ಜ್"
+              },
+              {
+                "name": "Munnekolalu Cross (Spice Garden)",
+                "name_kn": "Munnekolalu Cross (Spice Garden)"
+              },
+              {
+                "name": "Kundalahalli Gate",
+                "name_kn": "ಕುಂದಲಹಳ್ಳಿ ಗೇಟ್"
+              },
+              {
+                "name": "Kundalahalli",
+                "name_kn": "ಕುಂದಲಹಳ್ಳಿ"
+              },
+              {
+                "name": "BEML Layout Gate",
+                "name_kn": "ಬಿಇಎಂಎಲ್ ಲೇಔಟ್ ಗೇಟ್"
+              },
+              {
+                "name": "AECS Layout Cross",
+                "name_kn": "ಎಇಸಿಎಸ್ ಬಡಾವಣೆ ಕ್ರಾಸ್"
+              },
+              {
+                "name": "CMRIT College",
+                "name_kn": "ಸಿಎಂಆರ್‌ಐಟಿ ಕಾಲೇಜು"
+              },
+              {
+                "name": "Kundalahalli Colony",
+                "name_kn": "ಕುಂದಲಹಳ್ಳಿ ಕಾಲೋನಿ"
+              },
+              {
+                "name": "Graphite India",
+                "name_kn": "ಗ್ರಾಫೈಟ್‌ ಇಂಡಿಯಾ"
+              },
+              {
+                "name": "SAP Labs",
+                "name_kn": "SAP Labs"
+              },
+              {
+                "name": "Kundalahalli Metro Station",
+                "name_kn": "Kundalahalli Metro Station"
+              },
+              {
+                "name": "I Gate",
+                "name_kn": "ಐ ಗೇಟ್"
+              },
+              {
+                "name": "KTPO",
+                "name_kn": "ಕೆಟಿಪಿಒ"
+              },
+              {
+                "name": "White Field Bus Station (Vydehi Hospital)",
+                "name_kn": "White Field Bus Station (Vydehi Hospital)"
+              },
+              {
+                "name": "Sathya Sai Hospital",
+                "name_kn": "ಸತ್ಯ ಸಾಯಿ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Big Bazzar ITPL",
+                "name_kn": "ಬಿಗ್ ಬಜಾರ್‌ ಐಟಿಪಿಎಲ್"
+              },
+              {
+                "name": "Pattandur Agrahara Gate",
+                "name_kn": "ಪಟ್ಟಂದೂರು ಅಗ್ರಹಾರ ಗೇಟ್‌"
+              },
+              {
+                "name": "ITPL",
+                "name_kn": "ಐಟಿಪಿಎಲ್"
+              },
+              {
+                "name": "GR Tech Park ITPL",
+                "name_kn": "ಜಿಆರ್ ಟೆಕ್‌ ಪಾರ್ಕ್‌ ಐಟಿಪಿಎಲ್"
+              },
+              {
+                "name": "BPL",
+                "name_kn": "ಬಿ ಪಿ ಎಲ್‌"
+              },
+              {
+                "name": "Hope Farm",
+                "name_kn": "ಹೋಪ್‌ ಫಾರ್ಮ್"
+              },
+              {
+                "name": "Kadugodi Bridge",
+                "name_kn": "ಕಾಡುಗೋಡಿ ಬ್ರಿಡ್ಜ್"
+              },
+              {
+                "name": "Kadugodi Bus Station",
+                "name_kn": "ಕಾಡುಗೋಡಿ ಬಸ್‌ ನಿಲ್ದಾಣ"
+              }
+            ]
+          },
+          {
+            "Route": "KBS1K",
+            "Destination": "Kadugodi Bus Station",
+            "Via": "Whitefield",
+            "Area": "Marathahalli",
+            "PlatformNumber": "30",
+            "KannadaDestination": "ಕಾಡುಗೋಡಿ ಬಸ್ ನಿಲ್ದಾಣ",
+            "KannadaArea": "ಮಾರತಹಳ್ಳಿ",
+            "KannadaVia": "ವೈಟ್‌ಫೀಲ್ಡ್",
+            "Stops": [
+              {
+                "name": "Kempegowda Bus Station",
+                "name_kn": "ಕೆಂಪೇಗೌಡ ಬಸ್ ನಿಲ್ದಾಣ"
+              },
+              {
+                "name": "Maharani College",
+                "name_kn": "ಮಹಾರಾಣಿ ಕಾಲೇಜ್"
+              },
+              {
+                "name": "KR Circle",
+                "name_kn": "ಕೆ ಆರ್‌ ವೃತ್ತ"
+              },
+              {
+                "name": "St Marthas Hospital",
+                "name_kn": "ಸೆಂಟ್ ಮಾರ್ಥಸ್ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Corporation",
+                "name_kn": "ಕಾರ್ಪೊರೇಷನ್"
+              },
+              {
+                "name": "St Josephs Indian School/ Malya Hospital",
+                "name_kn": "ಸೆಂಟ್ ಜೋಸೆಫ್ ಇಂಡಿಯನ್ ಶಾಲೆ/ ಮಲ್ಯ ಆಸ್ಫತ್ರೆ"
+              },
+              {
+                "name": "Richmond Circle",
+                "name_kn": "ರಿಚ್ಮಂಡ್‌ ವೃತ್ತ"
+              },
+              {
+                "name": "St Joseph College",
+                "name_kn": "ಸೆಂಟ್‌ ಜೋಸೆಫ್‌ ಕಾಲೇಜ್"
+              },
+              {
+                "name": "Mayohall",
+                "name_kn": "ಮೆಯೋಹಾಲ್"
+              },
+              {
+                "name": "Hosmat Hospital",
+                "name_kn": "ಹಾಸ್‌ ಮ್ಯಾಟ್‌ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Military Accounts Office",
+                "name_kn": "ಮಿಲಿಟರಿ ಲೆಕ್ಕಪತ್ರಗಳ ಕಛೇರಿ"
+              },
+              {
+                "name": "Commando Hospital",
+                "name_kn": "ಕಮಾಂಡೋ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Domlur",
+                "name_kn": "ದೊಮ್ಮಲೂರು"
+              },
+              {
+                "name": "Domlur Flyover",
+                "name_kn": "ದೊಮ್ಮಲೂರು ಮೇಲು ಸೇತುವೆ"
+              },
+              {
+                "name": "Kodihalli",
+                "name_kn": "ಕೋಡಿಹಳ್ಳಿ"
+              },
+              {
+                "name": "NAL/Manipal Hospital",
+                "name_kn": "ಎನ್ ಎ ಎಲ್/ ಮಣಿಪಾಲ್‌ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Murugeshpalya",
+                "name_kn": "ಮುರುಗೇಶಪಾಳ್ಯ"
+              },
+              {
+                "name": "Konena Agrahara",
+                "name_kn": "ಕೋನೇನ ಅಗ್ರಹಾರ"
+              },
+              {
+                "name": "HAL Main Gate",
+                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಮುಖ್ಯದ್ವಾರ"
+              },
+              {
+                "name": "HAL Admin Gate",
+                "name_kn": "HAL Admin Gate"
+              },
+              {
+                "name": "Helicopter Division",
+                "name_kn": "ಹೆಲಿಕಾಪ್ಟರ್‌ ಡಿವಿಜನ್"
+              },
+              {
+                "name": "HAL Kalyana Mantap",
+                "name_kn": "ಹೆಚ್‌ಎಎಲ್‌ ಕಲ್ಯಾಣ ಮಂಟಪ"
+              },
+              {
+                "name": "Yamalur Cross",
+                "name_kn": "ಯಮಲೂರು ಕ್ರಾಸ್"
+              },
+              {
+                "name": "Marathahalli",
+                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ"
+              },
+              {
+                "name": "Marathahalli Bridge",
+                "name_kn": "ಮಾರತ್ತಹಳ್ಳಿ ಬ್ರಿಡ್ಜ್"
+              },
+              {
+                "name": "Munnekolalu Cross (Spice Garden)",
+                "name_kn": "Munnekolalu Cross (Spice Garden)"
+              },
+              {
+                "name": "Kundalahalli Gate",
+                "name_kn": "ಕುಂದಲಹಳ್ಳಿ ಗೇಟ್"
+              },
+              {
+                "name": "Thubarahalli",
+                "name_kn": "ತೂಬರಹಳ್ಳಿ"
+              },
+              {
+                "name": "Siddapura",
+                "name_kn": "ಸಿದ್ದಾಪುರ"
+              },
+              {
+                "name": "Ramagondanahalli",
+                "name_kn": "ರಾಮಗೊಂಡನಹಳ್ಳಹಲ್ಲಿ"
+              },
+              {
+                "name": "Varthur kodi",
+                "name_kn": "ವರ್ತೂರು ಕೋಡಿ"
+              },
+              {
+                "name": "Forum Mall",
+                "name_kn": "ಫೋರಂ‌ ಮಾಲ್"
+              },
+              {
+                "name": "Brooke Bond",
+                "name_kn": "ಬ್ರೂಕ್ ಬಾಂಡ್"
+              },
+              {
+                "name": "White Field Post Office",
+                "name_kn": "ವೈಟ್‌ ಫೀಲ್ಡ್‌ ಅಂಚೆ ಕಛೇರಿ"
+              },
+              {
+                "name": "Sai Baba General Hospital",
+                "name_kn": "ಸಾಯಿ ಬಾಬಾ ಜನರಲ್‌ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Munish Singh Hospital",
+                "name_kn": "ಮುನೀಶ್‌ ಸಿಂಗ್‌ ಆಸ್ಪತ್ರೆ"
+              },
+              {
+                "name": "Coffee Day Hope Farm",
+                "name_kn": "ಕಾಫಿ ಡೇ ಹೋಪ್ ಫಾರ್ಮ್"
+              },
+              {
+                "name": "Hope Farm",
+                "name_kn": "ಹೋಪ್‌ ಫಾರ್ಮ್"
+              },
+              {
+                "name": "Kadugodi Bridge",
+                "name_kn": "ಕಾಡುಗೋಡಿ ಬ್ರಿಡ್ಜ್"
+              },
+              {
+                "name": "Kadugodi Bus Station",
+                "name_kn": "ಕಾಡುಗೋಡಿ ಬಸ್‌ ನಿಲ್ದಾಣ"
               }
             ]
           }
