@@ -82,6 +82,7 @@
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 24px;
+  margin-top: 8px;
 }
 .section-header {
   font-size: 16px;

@@ -6,6 +6,9 @@
   import { selectedItem } from '$lib/stores/selectedItem';
   import {setResults} from "$lib/stores/results";
   import {routes} from "$lib/stores/routes";
+  import {get} from "svelte/store";
+  import {Platform} from "$lib/types/Platform";
+  import {Route} from "$lib/types/Route";
   const dispatch = createEventDispatcher();
   let isWide = false;
   let paneInstance = null;
@@ -53,6 +56,29 @@
     selectedItem.set(undefined);
     tick().then(() => setResults($routes))
   }
+  let copied = false;
+  async function copySelectedItemLink() {
+    const s = get(selectedItem);
+    if(s.type == 'Platform') { // Platform link
+      await navigator.clipboard.writeText(`${window.location.origin}/?pf=${s.display}`);
+      copied = true;
+    }
+    else if (s.type === 'Route') { // Route link
+      await navigator.clipboard.writeText(`${window.location.origin}/?r=${s.value}`);
+      copied = true;
+    }
+    else if (s.type === 'Area') { // Area / Via link
+      await navigator.clipboard.writeText(`${window.location.origin}/?a=${s.display}`);
+      copied = true;
+    }
+    else if (s.type === 'Stop') { // Stop link
+      await navigator.clipboard.writeText(`${window.location.origin}/?s=${s.display}`);
+      copied = true;
+    }
+    if (copied) {
+      setTimeout(() => { copied = false; }, 1000);
+    }
+  }
 
   onMount(() => {
     checkWide();
@@ -86,6 +112,7 @@
   {#if isWide}
     <div class="sheet-container is-wide sheet-open" role="dialog" aria-modal="true">
       <div class="sheet-content">
+        <button class="sheet-share material-icons" aria-label="Share" on:click={copySelectedItemLink}>{copied ? 'check' : 'content_copy'}</button>
         <button class="sheet-close" aria-label="Close" on:click={close}>&times;</button>
         {#if $selectedItem.type === 'Route'}
           <RouteView route={$selectedItem} />
@@ -103,6 +130,7 @@
     <div class="sheet-container sheet-open" bind:this={paneContentEl}>
       <div class="grabber"></div>
       <div class="sheet-content">
+        <button class="sheet-share material-icons" aria-label="Share" on:click={copySelectedItemLink}>{copied ? 'check' : 'content_copy'}</button>
         <button class="sheet-close" aria-label="Close" on:click={close}>&times;</button>
         {#if $selectedItem.type === 'Route'}
           <RouteView route={$selectedItem} />
@@ -146,6 +174,24 @@
   flex: 1;
   overflow-y: auto;
   position: relative;
+}
+.sheet-share {
+  position: absolute;
+  right: 46px;
+  top: 18px;
+  font-size: 20px;
+  /*background: linear-gradient(0deg, rgba(61, 61, 61, 0.5), rgba(61, 61, 61, 0.5)), rgba(127, 127, 127, 0.2);*/
+  background-blend-mode: overlay, luminosity;
+  border-radius: 1000px;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .sheet-close {
   position: absolute;
