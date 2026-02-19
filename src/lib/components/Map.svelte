@@ -489,6 +489,7 @@
 {#if showResetBounds}
   <button
     class="reset-bounds-btn"
+    aria-label="Recenter map"
     on:click={() => {
       if (map && platformBounds) {
         map.fitBounds(platformBounds, { padding: getFitBoundsPadding(), duration: 500 });
@@ -497,7 +498,7 @@
       }
     }}
   >
-    ↩ Station
+    <span class="material-icons reset-icon">my_location</span>
   </button>
 {/if}
 
@@ -509,17 +510,16 @@
 .reset-bounds-btn {
   position: fixed;
   bottom: 32px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 200;
+  right: 16px;
+  z-index: 201;
   background: #fff;
   border: none;
-  border-radius: 24px;
-  padding: 10px 22px;
-  font-family: 'Manrope', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  color: #1A1A1A;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-shadow: 0 2px 12px rgba(0,0,0,0.18);
   cursor: pointer;
   transition: box-shadow 0.15s, background 0.15s;
@@ -527,5 +527,17 @@
 .reset-bounds-btn:hover {
   background: #f5f5f7;
   box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+}
+.reset-icon {
+  font-family: 'Material Icons';
+  font-size: 22px;
+  color: #1A1A1A;
+  line-height: 1;
+  display: block;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
 }
 </style>
