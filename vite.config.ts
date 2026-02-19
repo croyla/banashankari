@@ -36,9 +36,9 @@ export default defineConfig({
 				'pwa-512x512.png'
 			],
 			manifest: {
-				name: 'Majestic',
-				short_name: 'Majestic',
-				description: 'Kempegowda Bus Station Platform App',
+				name: 'Banashankari',
+				short_name: 'Banashankari',
+				description: 'Banashankari Bus Station Platform App',
 				theme_color: '#ffffff',
 				background_color: '#ffffff',
 				display: 'standalone',

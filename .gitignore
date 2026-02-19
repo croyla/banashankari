@@ -31,3 +31,6 @@ src/lib/paraglide
 /.idea/modules.xml
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/vcs.xml
+/help/
+/raw/
+*.db

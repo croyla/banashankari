@@ -1,156 +1,990 @@
 import csv
+import datetime
 import json
-from collections import defaultdict
+import os
+import sys
+import hashlib
+import sqlite3
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# File paths
-platform_index_path = 'input/platform-index.csv'
-# bus_routes_path = 'input/bus-routes.csv'
-bus_stops_path = 'input/bus-stops.csv'
-platforms_geojson_path = 'input/platforms-majestic.geojson'
-output_geojson_path = 'static/data/platforms-routes-majestic.geojson'
-stops_kn = 'input/bus-stops-kn.csv'
+import requests
 
-# Read platform index
-platform_index = defaultdict(list)
-with open(platform_index_path, encoding='utf-8') as f:
-    reader = csv.DictReader(f)
-    for row in reader:
-        platform_number = row['Platform Number'].strip()
-        platform_index[platform_number].append(row)
-# Read bus stops from bus-stops.csv
-bus_stops_by_route = defaultdict(list)
-seen_bus_routes = set()
-with open(bus_stops_path, encoding='utf-8') as f:
-    reader = csv.reader(f)
-    header = next(reader)  # Skip header row
-    for row in reader:
-        if len(row) > 0 and row[0].strip():  # Check if route is not empty
-            route_number = row[0].strip()
-            # Get all stops from the row (skip empty cells)
-            stops = [stop.strip() for stop in row[1:] if stop and stop.strip()]
-            bus_stops_by_route[route_number] = stops
-            seen_bus_routes.add(route_number)
+# ──────────────────────────────────────────────
+# Configuration
+# ──────────────────────────────────────────────
 
-# Read Kannada stop names
-stop_kn_lookup = {}
-try:
-    with open('input/bus-stops-kn.csv', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            stop_kn_lookup[row['stop_name']] = row['stop_name_kn']
-except FileNotFoundError:
-    print("WARNING: bus-stops-kn.csv not found. Kannada stop names will be missing.")
+GTFS_FOLDER = '../assets/gtfs/bmtc-19-07-2024/'  # Path to GTFS folder (needs stop_times.txt and stops.txt)
 
-# # Read bus routes (keeping for fallback)
-# routes_by_number = defaultdict(list)
-# with open(bus_routes_path, encoding='utf-8') as f:
-#     reader = csv.reader(f)
-#     header = next(reader)
-#     for row in reader:
-#         platform = row[0].strip()
-#         route_numbers = row[1].split(',') if row[1] else []
-#         major_stops = [stop.strip() for stop in row[2:] if stop and stop.strip()]
-#         for route_number in route_numbers:
-#             route_number = route_number.strip()
-#             if route_number:
-#                 routes_by_number[(platform, route_number)].append(major_stops)
+API_URL = 'https://bmtcmobileapi.karnataka.gov.in/WebAPI/'
+VARNAM_API_URL = 'https://api.varnamproject.com/tl/kn/{word}'
 
-# Read platform geometries and build a lookup
-with open(platforms_geojson_path, encoding='utf-8') as f:
-    platforms_geojson = json.load(f)
-platform_geom_lookup = {}
-platform_color_lookup = {}
-for plat in platforms_geojson['features']:
-    plat_num = str(plat['properties'].get('Platform', '')).strip()
-    platform_geom_lookup[plat_num] = plat['geometry']
-    platform_color_lookup[plat_num] = plat['properties'].get('Color', '#FFFFFF')
+REQUEST_HEADERS_EN = {
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Content-Type': 'application/json',
+    'lan': 'en',
+    'deviceType': 'WEB',
+    'Origin': 'https://bmtcwebportal.amnex.com',
+    'Referer': 'https://bmtcwebportal.amnex.com/',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+}
 
-features = []
-for plat_num, plat_rows in platform_index.items():
-    plat_num = plat_num.upper()
-    geometry = platform_geom_lookup.get(plat_num)
-    color = platform_color_lookup.get(plat_num, '#FFFFFF')
-    routes = []
-    for plat_row in plat_rows:
-        bus_numbers = plat_row['Bus Number'].split(',') if plat_row['Bus Number'] else []
-        for bus_number in bus_numbers:
-            bus_number = bus_number.strip()
-            if not bus_number:
+REQUEST_HEADERS_KN = {
+    **REQUEST_HEADERS_EN,
+    'lan': 'kn',
+}
+
+CACHE_DB_PATH = 'api_cache.db'
+CACHE_DURATION_HOURS = 24
+MAX_WORKERS = 10
+VARNAM_CONCURRENCY = 4
+
+# ──────────────────────────────────────────────
+# SQLite API Cache
+# ──────────────────────────────────────────────
+
+def init_cache_db():
+    conn = sqlite3.connect(CACHE_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS api_cache (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            request_hash TEXT UNIQUE NOT NULL,
+            request_desc TEXT NOT NULL,
+            response_data TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+
+def get_cache_key(desc, request_data):
+    request_string = f"{desc}:{request_data}"
+    return hashlib.md5(request_string.encode()).hexdigest()
+
+
+def get_cached_response(desc, request_data):
+    try:
+        conn = sqlite3.connect(CACHE_DB_PATH)
+        cursor = conn.cursor()
+        cache_key = get_cache_key(desc, request_data)
+        cursor.execute(
+            f"SELECT response_data FROM api_cache WHERE request_hash = ? AND created_at > datetime('now', '-{CACHE_DURATION_HOURS} hours')",
+            (cache_key,)
+        )
+        result = cursor.fetchone()
+        conn.close()
+        if result:
+            return json.loads(result[0])
+        return None
+    except Exception as e:
+        print(f'  cache error: {e}')
+        return None
+
+
+def store_cached_response(desc, request_data, response_data):
+    try:
+        conn = sqlite3.connect(CACHE_DB_PATH)
+        cursor = conn.cursor()
+        cache_key = get_cache_key(desc, request_data)
+        cursor.execute(
+            'INSERT OR REPLACE INTO api_cache (request_hash, request_desc, response_data, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)',
+            (cache_key, desc, json.dumps(response_data))
+        )
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f'  cache store error: {e}')
+
+
+def cleanup_expired_cache():
+    try:
+        conn = sqlite3.connect(CACHE_DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute(f"DELETE FROM api_cache WHERE created_at <= datetime('now', '-{CACHE_DURATION_HOURS} hours')")
+        deleted = cursor.rowcount
+        conn.commit()
+        conn.close()
+        if deleted > 0:
+            print(f'Cleaned up {deleted} expired cache entries')
+    except Exception as e:
+        print(f'Cache cleanup error: {e}')
+
+
+# ──────────────────────────────────────────────
+# GTFS: Discover neighboring stops
+# ──────────────────────────────────────────────
+
+def get_next_stops(stop_ids, nest_level=2):
+    """Find stops reachable from stop_ids within nest_level hops using GTFS data."""
+    print(f'Loading GTFS stop_times for neighbor discovery (nest_level={nest_level})...')
+
+    with open(f"{GTFS_FOLDER}stop_times.txt", mode='r') as file:
+        reader = csv.DictReader(file)
+        stop_times = list(reader)
+
+    next_stops_total = {stop_id: [] for stop_id in stop_ids}
+
+    # Group by trip_id
+    stop_times_by_trip = {}
+    for st in stop_times:
+        stop_times_by_trip.setdefault(st['trip_id'], []).append(st)
+
+    for trip_id in stop_times_by_trip:
+        stop_times_by_trip[trip_id].sort(key=lambda x: int(x['stop_sequence']))
+
+    for stop_id in stop_ids:
+        for st in stop_times:
+            if st['stop_id'] != stop_id:
                 continue
-            # Find stops for this route from bus-stops.csv
-            stops = []
-            stops_source = "bus-stops.csv"
-            if bus_number in bus_stops_by_route:
-                if bus_number in seen_bus_routes:
-                    seen_bus_routes.remove(bus_number)
-                previous = ""
-                stops = []
-                for x in bus_stops_by_route[bus_number]:
-                    if previous != x:
-                        stops.append({
-                            'name': x,
-                            'name_kn': stop_kn_lookup.get(x, x)
-                        })
+
+            trip_id = st['trip_id']
+            trip_stop_times = stop_times_by_trip[trip_id]
+
+            current_index = next(
+                (i for i, x in enumerate(trip_stop_times) if x['stop_id'] == stop_id), None
+            )
+            if current_index is None:
+                continue
+
+            for offset in range(nest_level):
+                idx = current_index + offset
+                if idx >= len(trip_stop_times) - 1:
+                    break
+
+                curr = trip_stop_times[idx]['stop_id']
+                nxt = trip_stop_times[idx + 1]['stop_id']
+
+                if curr not in next_stops_total:
+                    next_stops_total[curr] = []
+                if nxt not in next_stops_total[curr]:
+                    next_stops_total[curr].append(nxt)
+
+    print(f'Found neighbors for {len(next_stops_total)} stops')
+    return next_stops_total
+
+
+# ──────────────────────────────────────────────
+# BMTC API: Fetch routes and platform data
+# ──────────────────────────────────────────────
+
+def fetch_all_routes():
+    """Fetch all routes from BMTC API in both English and Kannada."""
+    print('Fetching all routes from API...')
+
+    # English
+    cached = get_cached_response('GetAllRouteList_en', '{}')
+    if cached:
+        routes_en_data = cached
+    else:
+        resp = requests.post(f'{API_URL}GetAllRouteList', headers=REQUEST_HEADERS_EN, data='{}')
+        try:
+            routes_en_data = resp.json()
+        except Exception as e:
+            print(f'Error decoding route list JSON: {e}')
+            routes_en_data = {}
+        store_cached_response('GetAllRouteList_en', '{}', routes_en_data)
+
+    routes_en = {route['routeid']: route for route in routes_en_data.get('data', [])}
+    print(f'  Loaded {len(routes_en)} routes (English)')
+
+    # Kannada
+    cached = get_cached_response('GetAllRouteList_kn', '{}')
+    if cached:
+        routes_kn_data = cached
+    else:
+        resp = requests.post(f'{API_URL}GetAllRouteList', headers=REQUEST_HEADERS_KN, data='{}')
+        try:
+            routes_kn_data = resp.json()
+        except Exception as e:
+            print(f'Error decoding Kannada route list JSON: {e}')
+            routes_kn_data = {}
+        store_cached_response('GetAllRouteList_kn', '{}', routes_kn_data)
+
+    routes_kn = {route['routeid']: route for route in routes_kn_data.get('data', [])}
+    print(f'  Loaded {len(routes_kn)} routes (Kannada)')
+
+    return routes_en, routes_kn
+
+
+def fetch_platform_assignments(stop_ids, next_stops, overrides, nest_level=2):
+    """Query BMTC API for platform assignments using neighboring stop pairs."""
+    print('Fetching platform assignments from API...')
+
+    tomorrow_start = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00')
+    tomorrow_end = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:59')
+
+    schedule_times = {"Failed": [], "Received": []}
+    routes_done = set()
+    routes_done_lock = threading.Lock()
+    received_lock = threading.Lock()
+    failed_lock = threading.Lock()
+
+    s = {level: set() for level in range(nest_level + 1)}
+
+    def send_request(from_stop, to_stop):
+        data = json.dumps({
+            "fromStationId": int(from_stop),
+            "toStationId": int(to_stop),
+            "p_startdate": tomorrow_start,
+            "p_enddate": tomorrow_end,
+            "p_isshortesttime": 0,
+            "p_routeid": "",
+            "p_date": tomorrow_start
+        })
+
+        # Check cache
+        cache_desc = f'timetable_{from_stop}_{to_stop}'
+        cached = get_cached_response(cache_desc, data)
+        if cached is not None:
+            is_failed = (
+                cached.get("exception") not in (None, False) or
+                cached.get("isException") is True or
+                cached.get("Issuccess") is not True
+            )
+            return from_stop, to_stop, cached, is_failed
+
+        try:
+            response = requests.post(
+                f'{API_URL}GetTimetableByStation_v4',
+                headers=REQUEST_HEADERS_EN, data=data
+            ).json()
+        except Exception:
+            response = {
+                "isException": True, "Issuccess": False,
+                "exception": "Response not received in JSON.",
+                "Message": "Response not received in JSON."
+            }
+
+        store_cached_response(cache_desc, data, response)
+
+        is_failed = (
+            response.get("exception") not in (None, False) or
+            response.get("isException") is True or
+            response.get("Issuccess") is not True
+        )
+        return from_stop, to_stop, response, is_failed
+
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        for stop in stop_ids:
+            print(f'  Processing stop {stop}')
+            s[0].add(stop)
+
+            for level in range(nest_level):
+                has_failures = False
+                futures = []
+                print(f'    Level {level}: querying {len(s[level])} stops')
+
+                for b in s[level]:
+                    if b not in next_stops:
+                        continue
+                    for n in next_stops[b]:
+                        futures.append(executor.submit(send_request, stop, n))
+
+                for future in as_completed(futures):
+                    from_stop, to_stop, response, is_failed = future.result()
+
+                    if is_failed:
+                        with failed_lock:
+                            schedule_times["Failed"].append({
+                                "from_stop": from_stop,
+                                "to_stop": to_stop,
+                                "response": response,
+                                "level": level
+                            })
+                        s[level + 1].add(to_stop)
+                        has_failures = True
                     else:
-                        print(f"Route {bus_number} (Platform {plat_num}): Duplicate stop found, '{x}'")
-                    previous = x
+                        for route_entry in response.get("data", []):
+                            route_id = route_entry["routeid"]
+                            pf_name = overrides.get(str(route_id), route_entry.get("platformname", ""))
+                            pf_num = overrides.get(str(route_id), route_entry.get("platformnumber", ""))
+
+                            with routes_done_lock:
+                                if route_id in routes_done:
+                                    continue
+                                if (pf_name and pf_name != "") or (pf_num and pf_num != ""):
+                                    routes_done.add(route_id)
+
+                            with received_lock:
+                                new_entry = {
+                                    "route-number": route_entry.get('routeno', ''),
+                                    "route-name": route_entry.get("routename", ""),
+                                    "from-station-id": route_entry.get('fromstationid', ''),
+                                    "route-id": route_id,
+                                    "route-parent-id": '',  # populated later by fetch_all_route_stops
+                                    "platform-name": pf_name,
+                                    "platform-number": pf_num,
+                                    "bay-number": route_entry.get("baynumber"),
+                                }
+
+                                # Update if exists, otherwise add
+                                existing_index = None
+                                for i, existing in enumerate(schedule_times["Received"]):
+                                    if existing.get("route-id") == route_id:
+                                        existing_index = i
+                                        break
+                                if existing_index is not None:
+                                    schedule_times["Received"][existing_index] = new_entry
+                                else:
+                                    schedule_times["Received"].append(new_entry)
+
+                if not has_failures:
+                    print(f'    All requests successful at level {level}, stopping')
+                    break
+
+    print(f'  Received {len(schedule_times["Received"])} routes, {len(schedule_times["Failed"])} failures')
+    return schedule_times
+
+
+# ──────────────────────────────────────────────
+# Kannada translations via Varnam API
+# ──────────────────────────────────────────────
+
+def transliterate_varnam(word):
+    """Transliterate a single word to Kannada using Varnam API."""
+    cache_desc = f'varnam_{word}'
+    cached = get_cached_response(cache_desc, word)
+    if cached is not None:
+        return cached.get('result', word)
+
+    try:
+        url = VARNAM_API_URL.format(word=word.lower())
+        resp = requests.get(url, timeout=30)
+        if resp.status_code == 200:
+            data = resp.json()
+            result = data.get('result')
+            if isinstance(result, list) and result:
+                kn = result[0]
+            elif isinstance(result, str):
+                kn = result
             else:
-                print(f"Route {bus_number} (Platform {plat_num}): Stops not found in bus-stops.csv")
+                kn = word
+            store_cached_response(cache_desc, word, {'result': kn})
+            return kn
+    except Exception:
+        pass
+    return word
+
+
+def is_kannada(text):
+    """Check if text contains Kannada characters."""
+    if not text:
+        return False
+    for ch in text:
+        if '\u0C80' <= ch <= '\u0CFF':
+            return True
+    return False
+
+
+def get_kannada_route_info(routes_kn, route_id):
+    """Get Kannada route info from API data, transliterate if needed."""
+    route_kn = routes_kn.get(route_id, {})
+    from_station = route_kn.get('fromstation', '')
+    to_station = route_kn.get('tostation', '')
+
+    # If API returned English even with kn header, transliterate
+    if from_station and not is_kannada(from_station):
+        from_station = transliterate_varnam(from_station)
+    if to_station and not is_kannada(to_station):
+        to_station = transliterate_varnam(to_station)
+
+    return from_station, to_station
+
+
+def get_stop_name_kn(stop_name, kn_cache):
+    """Get Kannada stop name, using cache or Varnam API."""
+    if stop_name in kn_cache:
+        return kn_cache[stop_name]
+
+    kn = transliterate_varnam(stop_name)
+    kn_cache[stop_name] = kn
+    return kn
+
+
+# ──────────────────────────────────────────────
+# BMTC API: Fetch stop sequences and route parent IDs
+# ──────────────────────────────────────────────
+
+def fetch_route_parent_ids(route_numbers):
+    """Use SearchRoute_v2 to find routeparentid for each route number.
+    Optimises by grouping routes by first character and making one API call per group."""
+    print(f'Fetching route parent IDs for {len(route_numbers)} unique route numbers...')
+    parent_ids = {}
+
+    # Group route numbers by first character to minimize API calls
+    # e.g. 500-A, 500-B, 501-AC all share prefix '5' -> one API call
+    groups = {}
+    for routeno in route_numbers:
+        search_text = routeno.split(' ')[0] if ' ' in routeno else routeno
+        prefix = search_text[0] if search_text else ''
+        if prefix:
+            groups.setdefault(prefix, []).append((routeno, search_text))
+
+    print(f'  Grouped into {len(groups)} prefix queries: {sorted(groups.keys())}')
+
+    for prefix, route_list in groups.items():
+        cache_desc = f'SearchRoute_v2_{prefix}'
+        cached = get_cached_response(cache_desc, prefix)
+
+        if cached is not None:
+            data = cached.get('data', [])
+        else:
+            try:
+                resp = requests.post(
+                    f'{API_URL}SearchRoute_v2',
+                    headers=REQUEST_HEADERS_EN,
+                    data=json.dumps({"routetext": prefix}),
+                    timeout=30
+                )
+                result = resp.json()
+                store_cached_response(cache_desc, prefix, result)
+                data = result.get('data', [])
+            except Exception as e:
+                print(f'  SearchRoute_v2 error for prefix "{prefix}": {e}')
+                data = []
+
+        # Build lookup from API response
+        api_lookup = {}
+        for entry in data:
+            rn = entry.get('routeno', '').upper()
+            if rn not in api_lookup:
+                api_lookup[rn] = entry['routeparentid']
+
+        # Match each route in this group
+        for routeno, search_text in route_list:
+            # Exact match first
+            if routeno.upper() in api_lookup:
+                parent_ids[routeno] = api_lookup[routeno.upper()]
+            else:
+                # Prefix match fallback
+                for entry in data:
+                    if entry.get('routeno', '').upper().startswith(search_text.upper()):
+                        parent_ids[routeno] = entry['routeparentid']
+                        break
+
+    print(f'  Found parent IDs for {len(parent_ids)}/{len(route_numbers)} routes')
+    return parent_ids
+
+
+def fetch_route_stops(route_parent_id, stop_ids, from_station_id=None):
+    """Use SearchByRouteDetails_v4 to get stop sequence for a route.
+    Returns list of {stop_id, stop_name} for the correct direction.
+
+    Direction selection priority:
+    1. If from_station_id is given, pick the direction where from_station_id appears
+       before one of our stop_ids (bus came from there, now departing onward).
+    2. Pick the direction that starts at one of our stop_ids.
+    3. Fallback to UP direction.
+    """
+    cache_desc = f'SearchByRouteDetails_v4_{route_parent_id}'
+    cached = get_cached_response(cache_desc, str(route_parent_id))
+
+    if cached is not None:
+        result = cached
+    else:
+        try:
+            resp = requests.post(
+                f'{API_URL}SearchByRouteDetails_v4',
+                headers=REQUEST_HEADERS_EN,
+                data=json.dumps({"routeid": route_parent_id, "servicetypeid": 0}),
+                timeout=60
+            )
+            result = resp.json()
+            store_cached_response(cache_desc, str(route_parent_id), result)
+        except Exception as e:
+            print(f'  SearchByRouteDetails_v4 error for parent {route_parent_id}: {e}')
+            return []
+
+    stop_ids_set = set(str(sid) for sid in stop_ids)
+    from_id = str(from_station_id) if from_station_id else None
+
+    def direction_stops(direction):
+        data = result.get(direction, {}).get('data', [])
+        if not data:
+            return None
+        return [
+            {'stop_id': str(stop.get('stationid', '')), 'stop_name': stop.get('stationname', '')}
+            for stop in data
+        ]
+
+    # Strategy 1: use from_station_id to pick the direction where the bus came from
+    # (from_station_id appears before our stop_id in the sequence)
+    if from_id:
+        for direction in ['up', 'down']:
+            data = result.get(direction, {}).get('data', [])
+            if not data:
                 continue
-            # else:
-            #     # fallback: try to find from bus_routes.csv
-            #     stops_source = "bus-routes.csv (fallback)"
-            #     key = (plat_num, bus_number)
-            #     if key in routes_by_number:
-            #         stops = routes_by_number[key][0]  # Take the first match
-            #     else:
-            #         # fallback: try to find by route only (any platform)
-            #         for (plat_k, route_k), stops_list in routes_by_number.items():
-            #             if route_k == bus_number:
-            #                 stops = stops_list[0]
-            #                 break
-            #         if not stops:
-            #             stops_source = "no stops found"
-            # print(f"Route {bus_number} (Platform {plat_num}): {len(stops)} stops from {stops_source}")
+            station_ids = [str(stop.get('stationid', '')) for stop in data]
+            try:
+                from_idx = station_ids.index(from_id)
+            except ValueError:
+                continue
+            # Check that one of our stop_ids appears after from_idx
+            for j in range(from_idx + 1, len(station_ids)):
+                if station_ids[j] in stop_ids_set:
+                    return direction_stops(direction)
+
+    # Strategy 2: pick the direction that starts at one of our stop_ids
+    for direction in ['up', 'down']:
+        data = result.get(direction, {}).get('data', [])
+        if not data:
+            continue
+        if str(data[0].get('stationid', '')) in stop_ids_set:
+            return direction_stops(direction)
+
+    # Fallback: return UP direction if available
+    return direction_stops('up') or []
+
+
+def fetch_all_route_stops(schedule_times, stop_ids):
+    """Fetch stop sequences for all received routes via the API."""
+    print('Fetching stop sequences from API...')
+
+    # Collect unique route numbers
+    route_numbers = set()
+    for route_data in schedule_times["Received"]:
+        rn = route_data.get('route-number', '')
+        if rn:
+            route_numbers.add(rn)
+
+    # Get parent IDs
+    parent_ids = fetch_route_parent_ids(route_numbers)
+
+    # Update schedule_times with parent IDs
+    for route_data in schedule_times["Received"]:
+        rn = route_data.get('route-number', '')
+        if rn in parent_ids:
+            route_data['route-parent-id'] = parent_ids[rn]
+
+    # Fetch stop sequences for each route, using from_station_id to pick the correct direction.
+    # Routes sharing the same parent_id (opposite directions) each get their own sequence.
+    route_stops = {}  # route_id -> [{'stop_id', 'stop_name'}]
+
+    for route_data in schedule_times["Received"]:
+        route_id = route_data["route-id"]
+        parent_id = route_data.get('route-parent-id', '')
+        from_station_id = route_data.get('from-station-id', '')
+        if not parent_id:
+            continue
+
+        stops = fetch_route_stops(parent_id, stop_ids, from_station_id)
+        if stops:
+            route_stops[route_id] = stops
+
+    print(f'  Fetched stop sequences for {len(route_stops)} routes')
+    return route_stops
+
+
+# ──────────────────────────────────────────────
+# Build output GeoJSON
+# ──────────────────────────────────────────────
+
+def smart_match_platform(route_number, platforms_routes, platform_route_ids):
+    """Intelligently match a route to a platform based on route number patterns.
+
+    Tries:
+    1. Exact prefix match (e.g., "13-C" for "13-C SGH-ISROL")
+    2. Base number match with most occurrences (e.g., platform with most "13-" routes for "13-S")
+
+    Returns matched platform name (uppercase) or None.
+    """
+    if not route_number:
+        return None
+
+    # Check for exact prefix matches first (e.g., "13-C" exists for "13-C SGH-ISROL")
+    for platform_name in platforms_routes:
+        if platform_name in ["UNKNOWN", "UNSORTED"]:
+            continue
+
+        routes_on_platform = platforms_routes[platform_name]
+        for rd in routes_on_platform:
+            existing_route_num = rd.get('route-number', '')
+            # Check if route_number starts with an existing route number
+            if existing_route_num and route_number.startswith(existing_route_num + ' '):
+                return platform_name
+
+    # Extract base route number (e.g., "13" from "13-S", "500" from "500-A")
+    # Handle formats like "13-S", "500-A", "G-4", etc.
+    parts = route_number.split('-')
+    if len(parts) < 2:
+        return None
+
+    base_number = parts[0]  # e.g., "13", "500", "G"
+
+    # Count occurrences of routes with this base number on each platform
+    platform_counts = {}
+    for platform_name in platforms_routes:
+        if platform_name in ["UNKNOWN", "UNSORTED"]:
+            continue
+
+        count = 0
+        routes_on_platform = platforms_routes[platform_name]
+        for rd in routes_on_platform:
+            existing_route_num = rd.get('route-number', '')
+            if existing_route_num and existing_route_num.startswith(base_number + '-'):
+                count += 1
+
+        if count > 0:
+            platform_counts[platform_name] = count
+
+    # Return platform with most matching routes
+    if platform_counts:
+        best_platform = max(platform_counts.items(), key=lambda x: x[1])
+        return best_platform[0]
+
+    return None
+
+
+def build_geojson(
+    schedule_times, routes_en, routes_kn, stop_platforms,
+    platforms_geojson, overrides, stop_ids, kn_cache, route_stops_api, file_nickname
+):
+    """Build the output GeoJSON matching the current app format."""
+    print('Building output GeoJSON...')
+
+    # Build platform geometry/color lookup from input geojson
+    platform_geom_lookup = {}
+    platform_color_lookup = {}
+    platform_icon_lookup = {}
+    for feature in platforms_geojson['features']:
+        plat_name = str(feature['properties'].get('Platform', '')).strip().upper()
+        icon = str(str(feature['properties'].get('Icon', plat_name)).strip().upper())
+        if feature['geometry']['type'] == 'Point':
+            platform_geom_lookup[plat_name] = feature['geometry']
+            platform_color_lookup[plat_name] = feature['properties'].get('Color', '#008F45')
+            platform_icon_lookup[plat_name] = icon
+
+    # Group routes by platform
+    platforms_routes = {name.upper(): [] for name in platform_geom_lookup}
+    platforms_routes["UNKNOWN"] = []
+    platforms_routes["UNSORTED"] = []
+
+    # Track which route numbers are already assigned to each platform to avoid duplicates
+    platform_route_ids = {name: set() for name in platforms_routes}
+
+    for route_data in schedule_times["Received"]:
+        route_id = route_data["route-id"]
+        from_station_id = str(route_data.get("from-station-id", ""))
+        route_number = route_data.get('route-number', '')
+
+        # Determine platform: stop-platforms mapping > overrides > API platform name/number
+        is_manual_override = False
+        if from_station_id in stop_platforms:
+            platform = stop_platforms[from_station_id].upper()
+            is_manual_override = True
+        elif str(route_id) in overrides:
+            platform = str(overrides[str(route_id)]).upper()
+        else:
+            pf_name = route_data.get("platform-name", "")
+            pf_num = route_data.get("platform-number", "")
+            platform = (pf_name if pf_name else pf_num if pf_num else "").upper()
+
+        # Smart matching: only apply if not from stop-platforms.json and no platform found yet
+        if not platform and not is_manual_override:
+            smart_platform = smart_match_platform(route_number, platforms_routes, platform_route_ids)
+            if smart_platform:
+                platform = smart_platform
+                print(f'  Smart matched route {route_number} to platform {platform}')
+
+        if not platform:
+            platforms_routes["UNKNOWN"].append(route_data)
+            continue
+        if platform in platforms_routes:
+            # Deduplicate: skip if this route is already assigned to this platform
+            if route_id in platform_route_ids[platform]:
+                continue
+            platform_route_ids[platform].add(route_id)
+            platforms_routes[platform].append(route_data)
+        else:
+            platforms_routes["UNSORTED"].append(route_data)
+
+    # Additional step: Cross-check stop sequences against stop_platforms
+    # If a route passes through a stop in stop_platforms, add it to that platform too
+    print('Cross-checking stop sequences against stop-platforms...')
+    additional_assignments = 0
+    for route_data in schedule_times["Received"]:
+        route_id = route_data["route-id"]
+        route_number = route_data.get('route-number', '')
+
+        # Get stop sequence for this route
+        route_stops = route_stops_api.get(route_id, [])
+
+        # Check each stop in the sequence, stop at the first match.
+        # The first informal stop hit is the station exit — later matches are en-route
+        # stops that shouldn't determine the departure platform.
+        for stop_info in route_stops:
+            stop_id = str(stop_info.get('stop_id', ''))
+            if stop_id in stop_platforms:
+                platform = stop_platforms[stop_id].upper()
+
+                # Add to this platform if not already there
+                if platform in platforms_routes:
+                    if route_id not in platform_route_ids[platform]:
+                        platform_route_ids[platform].add(route_id)
+                        platforms_routes[platform].append(route_data)
+                        additional_assignments += 1
+                        print(f'  Added route {route_number} to platform {platform} (passes through stop {stop_id})')
+                break  # Only use the first informal stop match
+
+    print(f'Added {additional_assignments} additional route assignments based on stop sequences')
+
+    # Build features
+    features = []
+    for plat_name, geometry in platform_geom_lookup.items():
+        color = platform_color_lookup.get(plat_name, '#008F45')
+        icon = platform_icon_lookup.get(plat_name, plat_name)
+        route_list = platforms_routes.get(plat_name, [])
+
+        routes = []
+        seen_route_numbers = set()
+        for route_data in route_list:
+            route_id = route_data["route-id"]
+            route_en = routes_en.get(route_id, {})
+
+            # English info
+            from_station = route_en.get('fromstation', '')
+            route_number = route_data.get('route-number', route_en.get('routeno', ''))
+
+            # De-duplicate by route number within the same platform
+            if route_number in seen_route_numbers:
+                continue
+            seen_route_numbers.add(route_number)
+
+            # Use fromstation as Area (general area), tostation as Destination
+            # Via can be derived from route name or left empty
+            route_name = route_data.get('route-name', route_en.get('routeno', ''))
+            area = from_station
+            via = ''  # API doesn't provide a direct "via" field
+
+            # Kannada info
+            kn_from, kn_to = get_kannada_route_info(routes_kn, route_id)
+
+            # Get stop sequence from API
+            stops = []
+            api_route_stops = route_stops_api.get(route_id, [])
+
+            # Find the first occurrence of any of our stop IDs
+            first_stop_index = None
+            for i, stop_info in enumerate(api_route_stops):
+                if str(stop_info.get('stop_id', '')) in [str(sid) for sid in stop_ids] and str(file_nickname).lower() in str(stop_info.get('stop_name', '')).replace('Banashankari Hunasemara', 'Hunasemara').lower():
+                    first_stop_index = i
+                    break
+
+            # Skip routes that don't pass through any main station stop
+            # (e.g. routes only assigned via informal stop cross-check)
+            if first_stop_index is None:
+                continue
+
+            # Splice to only include stops from our station onwards
+            api_route_stops = api_route_stops[first_stop_index:]
+
+            for stop_info in api_route_stops:
+                stop_name = stop_info['stop_name']
+                stop_kn = get_stop_name_kn(stop_name, kn_cache)
+                stops.append({
+                    'name': stop_name,
+                    'name_kn': stop_kn,
+                    'stop_id': stop_info['stop_id']
+                })
+
+            # Use last stop name as destination
+            destination = stops[-1]['name'] if stops else route_en.get('tostation', '')
+            kn_destination = stops[-1]['name_kn'] if stops else kn_to
+
             route_obj = {
-                'Route': bus_number,
-                'Destination': plat_row['Destination'].strip(),
-                'Via': plat_row['Via'].strip(),
-                'Area': plat_row['Area'].strip(),
-                'PlatformNumber': plat_row['Platform Number'].upper(),
-                'KannadaDestination': plat_row['Destination - Kannada'],
-                'KannadaArea': plat_row['Area - Kannada'],
-                'KannadaVia': plat_row['Via - Kannada'],
+                'Route': route_number,
+                'RouteId': route_id,
+                'RouteParentId': route_data.get('route-parent-id', ''),
+                'Destination': destination,
+                'Via': via,
+                'Area': area,
+                'PlatformNumber': plat_name,
+                'KannadaDestination': kn_destination,
+                'KannadaArea': kn_from,
+                'KannadaVia': '',
+                'FromStationId': route_data.get('from-station-id', ''),
                 'Stops': stops
             }
             routes.append(route_obj)
-    if geometry is None:
-        # Print error for each route if platform not found
-        for route in routes:
-            print(f"ERROR: Platform geometry not found for Platform {plat_num}, Route {route['Route']}")
-        continue
-    if routes:
-        feature = {
-            'type': 'Feature',
-            'geometry': geometry,
-            'properties': {
-                'Platform': plat_num,
-                'Color': color,
-                'Routes': routes
+
+        if routes:
+            feature = {
+                'type': 'Feature',
+                'geometry': geometry,
+                'properties': {
+                    'Platform': plat_name,
+                    'Color': color,
+                    'Icon': icon,
+                    'Routes': routes
+                }
             }
-        }
-        features.append(feature)
+            features.append(feature)
+
+    geojson = {
+        'type': 'FeatureCollection',
+        'features': features
+    }
+
+    # Report unknown/unsorted
+    unknown_count = len(platforms_routes.get("UNKNOWN", []))
+    unsorted_count = len(platforms_routes.get("UNSORTED", []))
+    if unknown_count > 0 or unsorted_count > 0:
+        print(f'  WARNING: {unknown_count} unknown, {unsorted_count} unsorted routes')
+
+    return geojson, platforms_routes
+
+
+# ──────────────────────────────────────────────
+# Main
+# ──────────────────────────────────────────────
+
+def main():
+    # Parse command-line arguments
+    # Usage: python generate-geojson.py <stop_id1> [stop_id2 ...] <nickname> [nest_level]
+    if len(sys.argv) < 3:
+        print('Usage: python generate-geojson.py <stop_id1> [stop_id2 ...] <nickname> [nest_level]')
+        print('Example: python generate-geojson.py 20621 20623 banashankari 2')
+        print('Using default options')
+        nest_level = 2
+        file_nickname = 'banashankari'
+        stop_ids = ['21149', '20621', '22459', '21711', '22062', '20897', '20623']
     else:
-        print("PF no routes", plat_num, color, routes)
+        if sys.argv[-1].isdigit() and not sys.argv[-2].isdigit():
+            # Last arg is nest_level, second-to-last is nickname
+            nest_level = int(sys.argv[-1])
+            file_nickname = sys.argv[-2]
+            stop_ids = sys.argv[1:-2]
+        elif sys.argv[-1].isdigit():
+            # All digits — ambiguous, treat last as nest_level
+            nest_level = int(sys.argv[-1])
+            file_nickname = sys.argv[-2]
+            stop_ids = sys.argv[1:-2]
+        else:
+            nest_level = 2
+            file_nickname = sys.argv[-1]
+            stop_ids = sys.argv[1:-1]
 
-geojson = {
-    'type': 'FeatureCollection',
-    'features': features
-}
+        print(f'Stop IDs: {stop_ids}')
+        print(f'Nickname: {file_nickname}')
+        print(f'Nest level: {nest_level}')
 
-with open(output_geojson_path, 'w', encoding='utf-8') as f:
-    json.dump(geojson, f, ensure_ascii=False, indent=2)
+    # File paths
+    platforms_geojson_path = f'input/platforms-{file_nickname}.geojson'
+    stop_platforms_path = 'input/stop-platforms.json'
+    overrides_path = 'input/overrides.json'
+    output_geojson_path = f'static/data/platforms-routes-{file_nickname}.geojson'
+    raw_output_path = f'raw/platforms-{file_nickname}.json'
 
-print(f"Missing Platform Index data for the following routes: {seen_bus_routes}")
+    # Initialize cache
+    init_cache_db()
+    cleanup_expired_cache()
 
-print(f"Wrote {len(features)} platform features to {output_geojson_path}")
+    # Load config files
+    with open(platforms_geojson_path, encoding='utf-8') as f:
+        platforms_geojson = json.load(f)
+
+    with open(stop_platforms_path, encoding='utf-8') as f:
+        stop_platforms_raw = json.load(f)
+
+    # Expand comma-separated stop IDs: {"21149,20621": "East"} -> {"21149": "East", "20621": "East"}
+    stop_platforms = {}
+    for key, platform_name in stop_platforms_raw.items():
+        for sid in key.split(','):
+            sid = sid.strip()
+            if sid:
+                stop_platforms[sid] = platform_name
+
+    overrides = {}
+    if os.path.exists(overrides_path):
+        with open(overrides_path, encoding='utf-8') as f:
+            overrides_json = json.load(f)
+            # Overrides may be nested by stop_id (like reference repo)
+            # Flatten: if value is a dict, merge it in
+            for key, val in overrides_json.items():
+                if isinstance(val, dict):
+                    overrides.update(val)
+                else:
+                    overrides[key] = val
+
+    # Step 1: Discover neighboring stops from GTFS
+    next_stops = get_next_stops(stop_ids, nest_level=nest_level)
+
+    # Step 2: Fetch all routes
+    routes_en, routes_kn = fetch_all_routes()
+
+    # Step 3: Fetch platform assignments
+    schedule_times = fetch_platform_assignments(stop_ids, next_stops, overrides, nest_level)
+
+    # Save raw data
+    os.makedirs('raw', exist_ok=True)
+    with open(raw_output_path, 'w', encoding='utf-8') as f:
+        json.dump(schedule_times, f, indent=2, ensure_ascii=False)
+    print(f'Saved raw data to {raw_output_path}')
+
+    # Step 4: Fetch stop sequences from API (SearchRoute_v2 + SearchByRouteDetails_v4)
+    route_stops_api = fetch_all_route_stops(schedule_times, stop_ids)
+
+    # Step 5: Build Kannada cache
+    kn_cache = {}
+    # Load existing Kannada translations if available
+    kn_csv_path = 'input/bus-stops-kn.csv'
+    if os.path.exists(kn_csv_path):
+        try:
+            with open(kn_csv_path, encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    kn_cache[row['stop_name']] = row['stop_name_kn']
+            print(f'Loaded {len(kn_cache)} existing Kannada translations')
+        except Exception as e:
+            print(f'WARNING: Could not load {kn_csv_path}: {e}')
+
+    # Step 6: Build output GeoJSON
+    geojson, platforms_routes = build_geojson(
+        schedule_times, routes_en, routes_kn, stop_platforms,
+        platforms_geojson, overrides, stop_ids, kn_cache,
+        route_stops_api, file_nickname
+    )
+
+    # Write output
+    os.makedirs(os.path.dirname(output_geojson_path), exist_ok=True)
+    with open(output_geojson_path, 'w', encoding='utf-8') as f:
+        json.dump(geojson, f, ensure_ascii=False, indent=2)
+    print(f'Wrote {len(geojson["features"])} platform features to {output_geojson_path}')
+
+    # Save unknown/unsorted
+    unknown = platforms_routes.get("UNKNOWN", [])
+    unsorted = platforms_routes.get("UNSORTED", [])
+    if unknown or unsorted:
+        os.makedirs('help', exist_ok=True)
+        with open(f'help/platforms-unaccounted-{file_nickname}.json', 'w', encoding='utf-8') as f:
+            json.dump({"Unknown": unknown, "Unsorted": unsorted}, f, indent=2, ensure_ascii=False)
+        print(f'Saved {len(unknown)} unknown + {len(unsorted)} unsorted routes to help/platforms-unaccounted-{file_nickname}.json')
+
+    # Save updated Kannada cache
+    if kn_cache:
+        with open(kn_csv_path, 'w', encoding='utf-8', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(['stop_name', 'stop_name_kn'])
+            for stop_name in sorted(kn_cache):
+                writer.writerow([stop_name, kn_cache[stop_name]])
+        print(f'Updated Kannada cache: {len(kn_cache)} entries in {kn_csv_path}')
+
+    # Print cache stats
+    try:
+        conn = sqlite3.connect(CACHE_DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute('SELECT COUNT(*) FROM api_cache')
+        total = cursor.fetchone()[0]
+        conn.close()
+        print(f'API cache contains {total} entries')
+    except Exception:
+        pass
+
+    print(f'Completed {file_nickname}')
+
+
+if __name__ == '__main__':
+    main()

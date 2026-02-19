@@ -199,7 +199,12 @@
   let findRoute = null;
   if ($selectedItem && $selectedItem.type === 'Route') {
     if ($selectedItem.value) {
-      findRoute = $routes.find(r => r.number == $selectedItem.value);
+      // If platformNumber is specified, find the exact route-platform combination
+      if ($selectedItem.platformNumber) {
+        findRoute = $routes.find(r => r.number == $selectedItem.value && r.platformNumber == $selectedItem.platformNumber);
+      } else {
+        findRoute = $routes.find(r => r.number == $selectedItem.value);
+      }
       tick().then(() => setResults([findRoute]));
     } else {
       findRoute = $selectedItem;
@@ -207,9 +212,20 @@
   }
   const pf = findRoute ? $platforms.find(p => p.platformNumber == findRoute.platformNumber) : null;
   const platformColor = pf ? pf.color : '#888';
+  const platformIcon = pf?.icon || null;
 
   function isKempegowda(stop) {
-    return stop.name === 'Kempegowda Bus Station';
+    return stop.name === 'Banashankari Bus Station' || stop.name === 'Banashankari';
+  }
+
+  // Format platform label
+  function formatPlatformLabel(platformNumber: string): string {
+    if (!platformNumber) return '';
+    const pf = platformNumber.trim();
+    // If it's a number, show "Platform <num>"
+    if (/^\d+$/.test(pf)) return `Platform ${pf}`;
+    // Otherwise it's a named platform like "WEST", "SOUTH" — show "Banashankari <Name>"
+    return `Banashankari ${pf.charAt(0).toUpperCase()}${pf.slice(1).toLowerCase()}`;
   }
   function handleChevronClick() {
     if ($previousSelectedItem) {
@@ -234,15 +250,15 @@
               <span class="material-icons" aria-hidden="true">chevron_left</span>
             </button>
           {/if}
-          <div class="platform-circle" style="background:{platformColor}">{findRoute.platformNumber}</div>
+          <div class="platform-circle" style="background:{platformColor}">{platformIcon || findRoute.platformNumber}</div>
           <div class="routeview-header-busmodal">
             <BusModal number={findRoute.number} />
           </div>
         </div>
         <div class="routeview-destination">{$language === 'en' ? findRoute.destination : findRoute.kannadaDestination ?? findRoute.destination}</div>
-        {#if findRoute.via?.name}
+        {#if findRoute.platformNumber}
           <div class="routeview-via-row">
-            <span class="routeview-via-label">{$messages.via().replace('%1', $language === 'en' ? findRoute.via?.name : findRoute.via?.nameKannada ?? findRoute.via?.name)}</span>
+            <span class="routeview-via-label">{$messages.from().replace('%1', formatPlatformLabel(findRoute.platformNumber))}</span>
           </div>
         {/if}
       </div>

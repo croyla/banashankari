@@ -2,22 +2,40 @@
   import BusModal from './BusModal.svelte';
   import {messages} from "$lib/stores/messages";
   import {language} from "$lib/stores/language";
+  import {platforms} from "$lib/stores/platforms";
+  import {get} from "svelte/store";
   export let route;
   export let getPlatformColor;
   export let handleRouteClick;
+
+  // Get platform icon if available
+  function getPlatformIcon(platformNumber: string): string | null {
+    const pf = get(platforms).find(p => p.platformNumber == platformNumber);
+    return pf?.icon || null;
+  }
+
+  // Format platform label
+  function formatPlatformLabel(platformNumber: string): string {
+    if (!platformNumber) return '';
+    const pf = platformNumber.trim();
+    // If it's a number, show "Platform <num>"
+    if (/^\d+$/.test(pf)) return `Platform ${pf}`;
+    // Otherwise it's a named platform like "WEST", "SOUTH" — show "Banashankari <Name>"
+    return `Banashankari ${pf.charAt(0).toUpperCase()}${pf.slice(1).toLowerCase()}`;
+  }
 </script>
 
-<div class="busrow-card" on:click={() => handleRouteClick(route)} tabindex="0" role="button" aria-label={`View route ${route.number}`}>  
+<div class="busrow-card" on:click={() => handleRouteClick(route)} tabindex="0" role="button" aria-label={`View route ${route.number}`}>
   <div class="busrow-top">
-    <div class="platform-circle" style={`background:${getPlatformColor(route.platformNumber)}`}> 
-      <span>{route.platformNumber}</span>
+    <div class="platform-circle" style={`background:${getPlatformColor(route.platformNumber)}`}>
+      <span>{getPlatformIcon(route.platformNumber) || route.platformNumber}</span>
     </div>
     <BusModal number={route.number} />
     <span class="busrow-chevron">&#8250;</span>
   </div>
   <div class="busrow-body">
     <div class="busrow-dest">{$language === 'en' ? route.destination : route.kannadaDestination ?? route.destination}</div>
-    <div class="busrow-via"><span class="via-label">{$messages.via().replace('%1', $language === 'en' ? route.via?.name : route.via?.nameKannada ?? route.via?.name)}</span> <span class="via-value"></span></div>
+    <div class="busrow-via"><span class="via-label">{$messages.from().replace('%1', formatPlatformLabel(route.platformNumber))}</span> <span class="via-value"></span></div>
   </div>
 </div>
 

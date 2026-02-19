@@ -24,7 +24,16 @@
   const dispatch = createEventDispatcher();
 
   // Dropdown suggestions
-  let suggestions: { type: string; value: string; display: string; displayKannada?: string; }[] = [];
+  let suggestions: { type: string; value: string; display: string; displayKannada?: string; platformLabel?: string; platformNumber?: string; }[] = [];
+
+  function formatPlatformLabel(platformNumber: string): string {
+    if (!platformNumber) return '';
+    const pf = platformNumber.trim();
+    // If it's a number, show "Platform <num>"
+    if (/^\d+$/.test(pf)) return `Platform ${pf}`;
+    // Otherwise it's a named platform like "WEST", "SOUTH" — show "Banashankari <Name>"
+    return `Banashankari ${pf.charAt(0).toUpperCase()}${pf.slice(1).toLowerCase()}`;
+  }
   let dropdownRef;
 
   onMount(() => {
@@ -106,9 +115,9 @@
     const q = $search.trim().toLowerCase();
     const allRoutes = get(routes);
     const matched = new Set();
-    const areaViaSet = new Map<string, {type: string, display: string, displayKannada: string, value: string}>();
-    const stopSet = new Map<string, {display: string, displayKannada: string, value: string}>();
-    const routeSet = new Map<string, {display: string, value: string}>();
+    const areaViaSet = new Map<string, {type: string, display: string, displayKannada: string, value: string, platformLabel: string}>();
+    const stopSet = new Map<string, {display: string, displayKannada: string, value: string, platformLabel: string}>();
+    const routeSet = new Map<string, {display: string, value: string, platformLabel: string, destination: string}>();
 
     // Use fuzzy search only if lastVoiceSearch is true
     let filteredRoutes = allRoutes;
@@ -136,6 +145,7 @@
     }
 
     for (const route of filteredRoutes) {
+      const pfLabel = formatPlatformLabel(route.platformNumber || '');
       // Area
       if (route.area) {
         if (
@@ -143,7 +153,8 @@
           (route.area.nameKannada && route.area.nameKannada.toLowerCase().includes(q))
         ) {
           if (route.area.name) {
-            areaViaSet.set(route.area.name, {type: 'Area', display: route.area.name, displayKannada: route.area.nameKannada || '', value: route.area.name});
+            const key = `${route.area.name}__${route.platformNumber || ''}`;
+            areaViaSet.set(key, {type: 'Area', display: route.area.name, displayKannada: route.area.nameKannada || '', value: route.area.name, platformLabel: pfLabel});
             matched.add(route);
           }
         }
@@ -157,7 +168,8 @@
               (v.nameKannada && v.nameKannada.toLowerCase().includes(q))
             ) {
               if (v.name) {
-                areaViaSet.set(v.name, {type: 'Area', display: v.name, displayKannada: v.nameKannada || '', value: v.name});
+                const key = `${v.name}__${route.platformNumber || ''}`;
+                areaViaSet.set(key, {type: 'Area', display: v.name, displayKannada: v.nameKannada || '', value: v.name, platformLabel: pfLabel});
                 matched.add(route);
               }
             }
@@ -167,7 +179,8 @@
           (route.via.nameKannada && route.via.nameKannada.toLowerCase().includes(q))
         ) {
           if (route.via.name) {
-            areaViaSet.set(route.via.name, {type: 'Area', display: route.via.name, displayKannada: route.via.nameKannada || '', value: route.via.name});
+            const key = `${route.via.name}__${route.platformNumber || ''}`;
+            areaViaSet.set(key, {type: 'Area', display: route.via.name, displayKannada: route.via.nameKannada || '', value: route.via.name, platformLabel: pfLabel});
             matched.add(route);
           }
         }
@@ -175,7 +188,7 @@
       // Stops
       if (route.stops && Array.isArray(route.stops)) {
         for (const s of route.stops) {
-          if(s.name && s.name == "Kempegowda Bus Station" || s.name == "Kempegowda Bus Stand") {
+          if(s.name && s.name == "Banashankari Bus Station" || s.name == "Banashankari") {
             continue;
           }
           if (
@@ -183,34 +196,103 @@
             (s.nameKannada && s.nameKannada.toLowerCase().includes(q))
           ) {
             if (s.name) {
-              stopSet.set(s.name, {display: s.name, displayKannada: s.nameKannada || '', value: s.name});
+              const key = `${s.name}__${route.platformNumber || ''}`;
+              stopSet.set(key, {display: s.name, displayKannada: s.nameKannada || '', value: s.name, platformLabel: pfLabel});
               matched.add(route);
             }
           }
         }
       }
-      // Route number
+      // Route number — create per-platform entries
       if (route.number && route.number.toLowerCase().includes(q)) {
         if (route.number) {
-          routeSet.set(route.number, {display: route.number, value: route.number});
+          const key = `${route.number}__${route.platformNumber || ''}`;
+          routeSet.set(key, {display: route.number, value: route.number, platformLabel: formatPlatformLabel(route.platformNumber || ''), destination: route.destination || ''});
           matched.add(route);
         }
       }
     }
-    // Remove areaViaSet entries that are also in stopSet
-    for (const stopName of stopSet.keys()) {
-      if (areaViaSet.has(stopName)) {
-        areaViaSet.delete(stopName);
+    // Remove areaViaSet entries whose display name matches a stopSet display name
+    const stopDisplayNames = new Set(Array.from(stopSet.values()).map(v => v.display));
+    for (const [key, val] of areaViaSet) {
+      if (stopDisplayNames.has(val.display)) {
+        areaViaSet.delete(key);
       }
     }
-    // Sort route suggestions by shortest display
+    // Sort route suggestions by shortest display, then platform label
     const sortedRouteSuggestions = Array.from(routeSet.entries())
-      .map(([r, obj]) => ({ type: 'Route', value: obj.value, display: obj.display }))
-      .sort((a, b) => a.display.length - b.display.length);
+      .map(([key, obj]) => {
+        // Extract platformNumber from the key (format: "routeNumber__platformNumber")
+        const platformNumber = key.split('__')[1] || '';
+        return {
+          type: 'Route',
+          value: obj.value,
+          display: obj.display,
+          destination: obj.destination,
+          platformLabel: obj.platformLabel,
+          platformNumber: platformNumber
+        };
+      })
+      .sort((a, b) => a.display.length - b.display.length || (a.platformLabel || '').localeCompare(b.platformLabel || ''));
+    // Count routes per stop/area per platform for sorting
+    const stopRouteCounts = new Map<string, number>();
+    const areaRouteCounts = new Map<string, number>();
+
+    for (const route of filteredRoutes) {
+      // Count for stops
+      if (route.stops && Array.isArray(route.stops)) {
+        for (const s of route.stops) {
+          if (s.name && s.name.toLowerCase().includes(q)) {
+            const key = `${s.name}__${route.platformNumber || ''}`;
+            stopRouteCounts.set(key, (stopRouteCounts.get(key) || 0) + 1);
+          }
+        }
+      }
+      // Count for areas/via
+      if (route.area && route.area.name && route.area.name.toLowerCase().includes(q)) {
+        const key = `${route.area.name}__${route.platformNumber || ''}`;
+        areaRouteCounts.set(key, (areaRouteCounts.get(key) || 0) + 1);
+      }
+      if (route.via && route.via.name && route.via.name.toLowerCase().includes(q)) {
+        const key = `${route.via.name}__${route.platformNumber || ''}`;
+        areaRouteCounts.set(key, (areaRouteCounts.get(key) || 0) + 1);
+      }
+    }
+
+    // Create stop suggestions with route counts and sort by count (descending)
+    const stopSuggestions = Array.from(stopSet.entries())
+      .map(([key, obj]) => {
+        const platformNumber = key.split('__')[1] || '';
+        const routeCount = stopRouteCounts.get(key) || 0;
+        return {
+          type: 'Stop',
+          value: obj.value,
+          display: obj.display,
+          displayKannada: obj.displayKannada,
+          platformLabel: obj.platformLabel,
+          platformNumber: platformNumber,
+          routeCount: routeCount
+        };
+      })
+      .sort((a, b) => b.routeCount - a.routeCount);
+
+    // Create area suggestions with route counts and sort by count (descending)
+    const areaSuggestions = Array.from(areaViaSet.entries())
+      .map(([key, obj]) => {
+        const platformNumber = key.split('__')[1] || '';
+        const routeCount = areaRouteCounts.get(key) || 0;
+        return {
+          ...obj,
+          platformNumber: platformNumber,
+          routeCount: routeCount
+        };
+      })
+      .sort((a, b) => b.routeCount - a.routeCount);
+
     suggestions = [
       ...sortedRouteSuggestions,
-      ...Array.from(stopSet.values()).map(obj => ({ type: 'Stop', value: obj.value, display: obj.display, displayKannada: obj.displayKannada })),
-      ...Array.from(areaViaSet.values()),
+      ...stopSuggestions,
+      ...areaSuggestions,
     ];
     setResults(Array.from(matched));
     // Automatically select first suggestion for voice search

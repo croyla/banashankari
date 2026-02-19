@@ -106,7 +106,7 @@ function closeSheet() {
 <!--          <LanguageSwitcher />-->
 <!--        </div>-->
         {#if !(searchFocused || voiceSearchActive || $selectedItem || search)}
-            <Header title="Majestic Bus Station" />
+            <Header title="banashankari Bus Station" />
         {/if}
         <Searchbar
             bind:search

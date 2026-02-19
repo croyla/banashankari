@@ -1,6 +1,16 @@
 <script lang="ts">
   export let number: string | number;
   import RouteIcon from '../../assets/icons/route.svg';
+
+  function formatNumber(raw: string | number): string {
+    const s = String(raw);
+    const noDash = s.replace(/-/g, '');
+    const parts = noDash.split(' ').filter(Boolean);
+    if (parts.length === 0) return noDash;
+    const first = parts[0];
+    if (/\d/.test(first)) return first;
+    return parts.length > 1 ? `${first} ${parts[1]}` : first;
+  }
 </script>
 
 <div class="busmodal-outer">
@@ -8,7 +18,7 @@
     <span class="busmodal-icon">
       <RouteIcon width="14" height="16.8" />
     </span>
-    <span class="busmodal-number">{number}</span>
+    <span class="busmodal-number">{formatNumber(number)}</span>
   </div>
 </div>
 

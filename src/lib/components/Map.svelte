@@ -5,11 +5,14 @@
     import {setPlatforms} from '$lib/stores/platforms';
     import {setRoutes} from '$lib/stores/routes';
     import {results, setResults} from '$lib/stores/results';
+    import {displayedLiveArrivals, focusedLiveBus} from '$lib/stores/liveArrivals';
     import {get} from 'svelte/store';
     import {Platform} from '$lib/types/Platform';
     import {previousSelectedItem, selectedItem} from '$lib/stores/selectedItem';
 
-    const MAJESTIC_CENTER: maplibregl.LngLatLike = [77.5724549, 12.9772291]; // [lng, lat]
+    const banashankari_CENTER: maplibregl.LngLatLike = [77.5736529, 12.917500]; // [lng, lat]
+    let showResetBounds = false;
+    let platformBounds: maplibregl.LngLatBounds | null = null;
 
     // // Raster overlay boundaries
     // let overlayBounds = [
@@ -34,11 +37,22 @@
     let map: maplibregl.Map | undefined;
     let platformsGeoJson: GeoJSON.FeatureCollection | null = null;
 
+    function getFitBoundsPadding(): number {
+        const el = document.getElementById('map');
+        if (!el) return 60;
+        return Math.max(20, Math.floor(Math.min(el.clientWidth, el.clientHeight) * 0.12));
+    }
+
     function updatePlatformColors() {
         if (!map || !platformsGeoJson) return;
         // Use the global search value to determine if a search is active
         const currentResults = get(results);
         const resultRouteIds = new Set(currentResults ? currentResults.map(r => r.number) : []);
+
+        // Check if there's a platform filter active
+        const currentSelectedItem = get(selectedItem);
+        const activePlatformFilter = currentSelectedItem?.platformNumber?.toUpperCase() || null;
+
         // Clone the geojson
         const updated = JSON.parse(JSON.stringify(platformsGeoJson));
         for (const feature of updated.features) {
@@ -47,8 +61,17 @@
                 feature.properties.OriginalColor = feature.properties.Color;
             }
             const platformRoutes = (feature.properties && Array.isArray(feature.properties.Routes)) ? feature.properties.Routes : [];
-            // isGray: true if no route matches
-            const isGray = !platformRoutes.some((route) => Object.hasOwn(route, 'Route') && resultRouteIds.has(route.Route));
+            const platformNumber = feature.properties.Platform?.toString().toUpperCase() || '';
+
+            // If platform filter is active, only highlight that specific platform
+            let isGray;
+            if (activePlatformFilter) {
+                isGray = platformNumber !== activePlatformFilter;
+            } else {
+                // Otherwise, use route matching logic
+                isGray = !platformRoutes.some((route) => Object.hasOwn(route, 'Route') && resultRouteIds.has(route.Route));
+            }
+
             feature.properties.isGray = isGray;
             feature.properties.Color = isGray ? '#D2D2D2' : feature.properties.OriginalColor || feature.properties.Color;
         }
@@ -83,7 +106,7 @@
                     }
                 ]
             },
-            center: MAJESTIC_CENTER,
+            center: banashankari_CENTER,
             zoom: 16.8,
             dragRotate: false,
             bearing: 0,
@@ -92,11 +115,50 @@
             minPitch: 0
         });
         // Subscribe to results and update platform colors on change
-        const unsub = results.subscribe(() => {
+        const unsubResults = results.subscribe(() => {
             if (map && platformsGeoJson) {
                 updatePlatformColors();
             }
         });
+
+        // Subscribe to selectedItem to update when platform filter changes
+        const unsubSelected = selectedItem.subscribe(() => {
+            if (map && platformsGeoJson) {
+                updatePlatformColors();
+            }
+        });
+
+        // Subscribe to displayed live arrivals and update bus markers on the map
+        const unsubLive = displayedLiveArrivals.subscribe(arrivals => {
+            if (!map) return;
+            const features: GeoJSON.Feature[] = arrivals
+                .filter(a => a.location)
+                .map(a => ({
+                    type: 'Feature' as const,
+                    geometry: { type: 'Point' as const, coordinates: [a.location!.lng, a.location!.lat] },
+                    properties: {
+                        bus_no: a.bus_no || '',
+                        display_number: a.display_number,
+                        vehicle_id: String(a.vehicle_id || '')
+                    }
+                }));
+            const geojson: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features };
+            if (map.getSource('live-buses')) {
+                (map.getSource('live-buses') as maplibregl.GeoJSONSource).setData(geojson);
+            }
+        });
+
+        // Subscribe to focusedLiveBus and pan map to that bus location
+        const unsubFocused = focusedLiveBus.subscribe(bus => {
+            if (!map || !bus || !bus.location) return;
+            map.easeTo({
+                center: [bus.location.lng, bus.location.lat],
+                zoom: Math.max(map.getZoom(), 17),
+                duration: 600
+            });
+            showResetBounds = true;
+        });
+
         // Prevent rotation and pitch changes
         map.on('rotate', () => {
             map.setBearing(0);
@@ -126,7 +188,7 @@
             const paramValue = paramType ? urlParams.get(paramType) : undefined;
 
             // Add platforms geojson
-            fetch('/data/platforms-routes-majestic.geojson')
+            fetch('/data/platforms-routes-banashankari.geojson')
                 .then(r => r.json())
                 .then((data: GeoJSON.FeatureCollection) => {
                     if(!map) return;
@@ -139,12 +201,13 @@
                         const platformRoutes = (feature.properties && Array.isArray(feature.properties.Routes)) ? feature.properties.Routes : [];
                         feature.properties!.isGray = !platformRoutes.some((route) => Object.hasOwn(route, 'Route') && resultRouteIds.has(route.Route));
                     }
-                    map.fitBounds(bounds, {padding: 200});
+                    map.fitBounds(bounds, {padding: getFitBoundsPadding()});
                     platformsGeoJson = data;
                     // Store platforms as Platform class instances
                     const platformsArr = (data.features || []).map(feature => {
                         const platformNumber = feature.properties?.Platform?.toString().toUpperCase() || '';
-                        const color = feature.properties?.Color || '#FFFFFF';
+                        const color = feature.properties?.Color || '#008F45';
+                        const icon = feature.properties?.Icon || null;
                         const routes = (feature.properties?.Routes || []).map(route => {
                             // Convert stops
                             const stops = (route.Stops || []).map((s) => ({ name: s.name, nameKannada: s.name_kn}));
@@ -162,7 +225,7 @@
                                 platformNumber: route.PlatformNumber.toUpperCase()
                             };
                         });
-                        return new Platform({ platformNumber, color, routes });
+                        return new Platform({ platformNumber, color, icon, routes });
                     });
                     setPlatforms(platformsArr);
 
@@ -205,7 +268,7 @@
                         source: 'platforms',
                         filter: ['==', ['get', 'isGray'], true],
                         layout: {
-                            'text-field': ['get', 'Platform'],
+                            'text-field': ['to-string', ['get', 'Icon']],
                             'text-size': 16,
                             'text-font': ['Manrope SemiBold'],
                             'text-offset': [0, 0],
@@ -244,7 +307,7 @@
                             'circle-color': [
                                 'coalesce',
                                 ['get', 'Color'],
-                                '#FFFFFF'
+                                '#008F45'
                             ]
                         }
                     });
@@ -255,7 +318,7 @@
                         source: 'platforms',
                         filter: ['==', ['get', 'isGray'], false],
                         layout: {
-                            'text-field': ['get', 'Platform'],
+                            'text-field': ['to-string', ['get', 'Icon']],
                             'text-size': 16
                             //     [
                             //     'interpolate',
@@ -293,6 +356,51 @@
                         map.removeLayer('platform-labels');
                     }
 
+                    // Add live bus source and layers
+                    map.addSource('live-buses', {
+                        type: 'geojson',
+                        data: { type: 'FeatureCollection', features: [] }
+                    });
+                    map.addLayer({
+                        id: 'live-bus-circles',
+                        type: 'circle',
+                        source: 'live-buses',
+                        paint: {
+                            'circle-radius': [
+                                'interpolate', ['linear'], ['zoom'],
+                                13.7, 3, 15.7, 7, 16.7, 10
+                            ],
+                            'circle-color': '#4CAF50',
+                            'circle-stroke-width': 1.5,
+                            'circle-stroke-color': '#fff'
+                        }
+                    });
+                    map.addLayer({
+                        id: 'live-bus-labels',
+                        type: 'symbol',
+                        source: 'live-buses',
+                        layout: {
+                            'text-field': ['to-string', ['get', 'bus_no']],
+                            'text-size': 11,
+                            'text-font': ['Manrope SemiBold'],
+                            'text-offset': [0, 1.6],
+                            'text-anchor': 'top',
+                            'text-allow-overlap': false
+                        },
+                        paint: {
+                            'text-color': '#1A1A1A',
+                            'text-halo-color': '#fff',
+                            'text-halo-width': 1,
+                            'text-opacity': [
+                                'interpolate', ['linear'], ['zoom'],
+                                16.2, 0, 16.7, 1
+                            ]
+                        }
+                    });
+
+                    // Store platform bounds for reset
+                    platformBounds = bounds;
+
                     // Add click listener for platform features
                     map.on('click', (e) => {
                         const features = map.queryRenderedFeatures(e.point, { layers: ['platform-circles-gray', 'platform-circles-colored'] });
@@ -301,7 +409,11 @@
                             if (feature && feature.properties && feature.properties.Platform) {
                                 selectedItem.set(undefined);
                                 previousSelectedItem.set(undefined);
-                                tick().then( () => selectedItem.set({ type: 'Platform', display: feature.properties.Platform }) );
+                                tick().then( () => selectedItem.set({
+                                    type: 'Platform',
+                                    display: feature.properties.Platform,
+                                    platformNumber: feature.properties.Platform // Add platformNumber for map highlighting and live arrivals
+                                }) );
                             }
                         }
                     });
@@ -363,7 +475,10 @@
         return () => {
             if(map)
                 map.remove();
-            unsub();
+            unsubResults();
+            unsubSelected();
+            unsubLive();
+            unsubFocused();
         };
     });
 
@@ -371,9 +486,46 @@
 
 <div id="map" class="fixed inset-0 w-screen h-screen z-0"></div>
 
+{#if showResetBounds}
+  <button
+    class="reset-bounds-btn"
+    on:click={() => {
+      if (map && platformBounds) {
+        map.fitBounds(platformBounds, { padding: getFitBoundsPadding(), duration: 500 });
+        showResetBounds = false;
+        focusedLiveBus.set(null);
+      }
+    }}
+  >
+    ↩ Station
+  </button>
+{/if}
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 /* Hide the geolocate control button */
 .maplibregl-ctrl-geolocate { display: none !important; }
+.reset-bounds-btn {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  background: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 10px 22px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1A1A1A;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  cursor: pointer;
+  transition: box-shadow 0.15s, background 0.15s;
+}
+.reset-bounds-btn:hover {
+  background: #f5f5f7;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+}
 </style>

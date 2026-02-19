@@ -3,7 +3,7 @@
   import {previousSelectedItem, selectedItem} from "$lib/stores/selectedItem";
   import BusModal from "$lib/components/BusModal.svelte";
 
-  export let suggestions: { type: string; value: string; display: string; displayKannada?: string; }[] = [];
+  export let suggestions: { type: string; value: string; display: string; displayKannada?: string; platformLabel?: string; platformNumber?: string; destination?: string; }[] = [];
   export let onSelect: (s: any) => void = (s) => {
     previousSelectedItem.set(undefined);
     selectedItem.set(undefined);
@@ -31,18 +31,26 @@
 
 {#if suggestions.length > 0}
   <div class="cupertino-suggestions-dropdown" role="listbox">
-    {#each suggestions as s, i (s.type + '-' + (s.value ?? s.display ?? s.displayKannada ?? i))}
+    {#each suggestions as s, i (s.type + '-' + (s.value ?? s.display ?? s.displayKannada ?? i) + '-' + (s.platformLabel ?? ''))}
       <button
         type="button"
         class="cupertino-suggestion-item"
         role="option"
-        aria-label={(s.displayKannada ? `${s.display}, ${s.displayKannada}` : s.display) }
+        aria-label={(s.platformLabel ? `${s.display}, From ${s.platformLabel}` : s.displayKannada ? `${s.display}, ${s.displayKannada}` : s.display) }
         on:click={() => onSelect(s)}
       >
         {#if s.type === 'Route'}
           <div class="cupertino-suggestion-prefix">
             <BusModal number={s.display} />
           </div>
+          <span class="cupertino-suggestion-labels">
+            {#if s.destination}
+              <span class="cupertino-suggestion-main">To {s.destination}</span>
+            {/if}
+            {#if s.platformLabel}
+              <span class="cupertino-suggestion-platform">From {s.platformLabel}</span>
+            {/if}
+          </span>
           {:else}
         <span class="cupertino-suggestion-labels">
           {#if $search && s.display && s.display.toLowerCase().includes($search.trim().toLowerCase())}
@@ -51,25 +59,19 @@
                 {#if seg.highlight}<b>{seg.text}</b>{:else}{seg.text}{/if}
               {/each}
             </span>
-            <!--{#if s.displayKannada}-->
-            <!--  <span class="cupertino-suggestion-secondary">{s.displayKannada}</span>-->
-            <!--{/if}-->
           {:else if $search && s.displayKannada && s.displayKannada.toLowerCase().includes($search.trim().toLowerCase())}
             <span class="cupertino-suggestion-main">
               {#each highlightSegments(s.displayKannada, $search) as seg}
                 {#if seg.highlight}<b>{seg.text}</b>{:else}{seg.text}{/if}
               {/each}
             </span>
-            <!--{#if s.display}-->
-            <!--  <span class="cupertino-suggestion-secondary">{s.display}</span>-->
-            <!--{/if}-->
           {:else}
             {#if s.display}
               <span class="cupertino-suggestion-main">{s.display}</span>
             {/if}
-            <!--{#if s.displayKannada}-->
-            <!--  <span class="cupertino-suggestion-secondary">{s.displayKannada}</span>-->
-            <!--{/if}-->
+          {/if}
+          {#if s.platformLabel}
+            <span class="cupertino-suggestion-platform">From {s.platformLabel}</span>
           {/if}
         </span>
         {/if}
@@ -141,6 +143,13 @@
   color: #888;
   margin-top: 2px;
   line-height: 1.1;
+}
+.cupertino-suggestion-platform {
+  font-size: 13px;
+  color: #8e8e93;
+  font-weight: 400;
+  margin-top: 3px;
+  line-height: 1.2;
 }
 .cupertino-suggestion-labels {
   display: flex;

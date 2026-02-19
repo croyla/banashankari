@@ -2,7 +2,7 @@
   import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
   import {messages} from "$lib/stores/messages";
 
-  // export let title: string = 'Majestic Bus Station';
+  // export let title: string = 'banashankari Bus Station';
 </script>
 
 <header class="cupertino-header">

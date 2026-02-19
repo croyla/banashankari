@@ -2,6 +2,7 @@
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"hello_world": "Hello, {name} from kn!",
 	"via": "%1 ಮೂಲಕ",
+	"from": "%1 ನಿಂದ",
 	"search": "ಬಸ್ ಸಂಖ್ಯೆ ಅಥವಾ ನಿರ್ದಿಷ್ಟ ಸ್ಥಳದ ಮೂಲಕ ಹುಡುಕಿ",
 	"buses_to": "%1ಗೆ ಬಸ್ಸುಗಳು",
 	"other_buses_to": "%1ಗೆ ಹೋಗುವ ಇತರ ಬಸ್ಸುಗಳು",
