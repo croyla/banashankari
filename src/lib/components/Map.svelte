@@ -152,8 +152,8 @@
         const unsubFocused = focusedLiveBus.subscribe(bus => {
             if (!map || !bus || !bus.location) return;
             map.easeTo({
-                center: [bus.location.lng, bus.location.lat],
-                zoom: Math.max(map.getZoom(), 17),
+                center: [bus.location.lng, bus.location.lat - 0.0005],
+                zoom: Math.max(17),
                 duration: 600
             });
             showResetBounds = true;
