@@ -9,5 +9,10 @@
 	"platform": "ಪ್ಲಾಟ್ಫಾರ್ಮ್ %1",
 	"back": "ಹಿಂತಿರುಗಿ",
 	"header": "ಕೆಂಪೇಗೌಡ ಬಸ್ ನಿಲ್ದಾಣದ",
-	"lan": "English"
+	"lan": "English",
+	"station": "Banashankari",
+	"EAST": "East",
+	"WEST": "West",
+	"MAIN": "Main",
+	"SOUTH": "South"
 }

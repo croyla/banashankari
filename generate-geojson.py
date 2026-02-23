@@ -954,6 +954,38 @@ def main():
         json.dump(geojson, f, ensure_ascii=False, indent=2)
     print(f'Wrote {len(geojson["features"])} platform features to {output_geojson_path}')
 
+    # Step 7: Filter and write stops-coordinates.json
+    # Collect all unique stop IDs from the geojson
+    stop_ids_in_geojson = set()
+    for feature in geojson['features']:
+        for route in feature['properties'].get('Routes', []):
+            for stop in route.get('Stops', []):
+                stop_id = str(stop.get('stop_id', ''))
+                if stop_id:
+                    stop_ids_in_geojson.add(stop_id)
+
+    # Load GTFS stops to get coordinates
+    stops_txt_path = os.path.join(GTFS_FOLDER, 'stops.txt')
+    stops_coordinates = {}
+    if os.path.exists(stops_txt_path):
+        with open(stops_txt_path, encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                stop_id = row['stop_id']
+                if stop_id in stop_ids_in_geojson:
+                    stops_coordinates[stop_id] = {
+                        'name': row['stop_name'],
+                        'lat': float(row['stop_lat']),
+                        'lon': float(row['stop_lon'])
+                    }
+
+    # Write filtered stops-coordinates.json
+    stops_coords_path = f'static/data/stops-coordinates.json'
+    os.makedirs(os.path.dirname(stops_coords_path), exist_ok=True)
+    with open(stops_coords_path, 'w', encoding='utf-8') as f:
+        json.dump(stops_coordinates, f, ensure_ascii=False, indent=2)
+    print(f'Wrote {len(stops_coordinates)} stop coordinates to {stops_coords_path}')
+
     # Save unknown/unsorted
     unknown = platforms_routes.get("UNKNOWN", [])
     unsorted = platforms_routes.get("UNSORTED", [])

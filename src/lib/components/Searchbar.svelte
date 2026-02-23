@@ -9,6 +9,7 @@
   import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
   import {messages} from "$lib/stores/messages";
   import Fuse from 'fuse.js';
+  import { searchMode } from '$lib/stores/searchMode';
 
   export let searchFocused: boolean;
   export let searchInput: HTMLInputElement | null = null;
@@ -26,6 +27,18 @@
   // Dropdown suggestions
   let suggestions: { type: string; value: string; display: string; displayKannada?: string; platformLabel?: string; platformNumber?: string; }[] = [];
 
+  // Nominatim query state
+  let nominatimResults: any[] = [];
+  let nominatimLoading = false;
+  let nominatimTimeout: number | null = null;
+
+  // Nearby stops state (when location is selected)
+  let selectedLocation: { display: string; lat: number; lon: number } | null = null;
+  let nearbyStops: Array<{ name: string; distance: number; nameKannada?: string }> = [];
+  let stopsCoordinates: Record<string, { name: string; lat: number; lon: number }> = {};
+  let stopsCoordinatesByName: Map<string, { lat: number; lon: number }> = new Map();
+  let viewbox = '77.5,12.85,77.65,13.0'; // Default, will be updated from geojson
+
   function formatPlatformLabel(platformNumber: string): string {
     if (!platformNumber) return '';
     const pf = platformNumber.trim();
@@ -36,7 +49,94 @@
   }
   let dropdownRef;
 
-  onMount(() => {
+  // Parse Nominatim address for display
+  function parseAddress(displayName: string): { main: string; detail: string } {
+    const parts = displayName.split(',').map(p => p.trim());
+    if (parts.length === 0) return { main: displayName, detail: '' };
+
+    const main = parts[0];
+    // Filter out pincode, state (Karnataka), country (India, Bharat)
+    const detailParts = parts.slice(1).filter(p =>
+      !p.match(/^\d{6}$/) && // pincode
+      !p.match(/^Karnataka$/i) && // state
+      !p.match(/^India$/i) && // country
+      !p.match(/^Bharat$/i) // country
+    );
+    const detail = detailParts.join(', ');
+    return { main, detail };
+  }
+
+  // Nominatim query function
+  async function queryNominatim(query: string) {
+    if (!query || query.length < 3) {
+      nominatimResults = [];
+      return;
+    }
+
+    nominatimLoading = true;
+
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?` +
+        `q=${encodeURIComponent(query)}&` +
+        `format=json&limit=5&` +
+        `viewbox=${viewbox}&bounded=1`,
+        {
+          headers: {
+            'User-Agent': 'Banashankari Bus Station App'
+          }
+        }
+      );
+      const data = await response.json();
+      nominatimResults = data || [];
+    } catch (error) {
+      console.error('Nominatim error:', error);
+      nominatimResults = [];
+    } finally {
+      nominatimLoading = false;
+    }
+  }
+
+  // Haversine distance calculation
+  function getDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371; // Earth radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c * 1000; // Return in meters
+  }
+
+  onMount(async () => {
+    // Load stops coordinates
+    try {
+      const response = await fetch('/data/stops-coordinates.json');
+      stopsCoordinates = await response.json();
+      // Build name-based lookup
+      for (const [stopId, stopData] of Object.entries(stopsCoordinates)) {
+        stopsCoordinatesByName.set(stopData.name, { lat: stopData.lat, lon: stopData.lon });
+      }
+
+      // Calculate viewbox from stops (5km buffer)
+      const coords = Object.values(stopsCoordinates).map(s => ({ lat: s.lat, lon: s.lon }));
+      if (coords.length > 0) {
+        const lats = coords.map(c => c.lat);
+        const lons = coords.map(c => c.lon);
+        const minLat = Math.min(...lats);
+        const maxLat = Math.max(...lats);
+        const minLon = Math.min(...lons);
+        const maxLon = Math.max(...lons);
+
+        // Add ~5km buffer (roughly 0.045 degrees at this latitude)
+        const buffer = 0.045;
+        viewbox = `${minLon - buffer},${minLat - buffer},${maxLon + buffer},${maxLat + buffer}`;
+      }
+    } catch (error) {
+      console.error('Failed to load stops coordinates:', error);
+    }
+
     speechSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
     if (speechSupported) {
       const SpeechRecognitionClass = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
@@ -84,6 +184,8 @@
     search.set('');
     selectedItem.set(undefined);
     previousSelectedItem.set(undefined);
+    selectedLocation = null;
+    nearbyStops = [];
     searchInput?.focus();
   }
 
@@ -100,6 +202,101 @@
   }
 
   function handleSelectSuggestion(s) {
+    if (s.type === 'Toggle') {
+      // Toggle search mode
+      searchMode.update(mode => mode === 'routes' ? 'location' : 'routes');
+      search.set('');
+      suggestions = [];
+      nominatimResults = [];
+      selectedLocation = null;
+      nearbyStops = [];
+      return;
+    }
+
+    if (s.type === 'LocationHeader') {
+      // Location header is not clickable, ignore
+      return;
+    }
+
+    if (s.type === 'Location') {
+      // Handle location selection - find nearby stops
+      selectedLocation = { display: s.display, lat: s.lat, lon: s.lon };
+
+      // Get all unique stops from routes
+      const allRoutes = get(routes);
+      const stopsMap = new Map<string, { name: string; nameKannada?: string }>();
+      for (const route of allRoutes) {
+        if (route.stops && Array.isArray(route.stops)) {
+          for (const stop of route.stops) {
+            if (stop.name !== 'Banashankari Bus Station' && stop.name !== 'Banashankari') {
+              stopsMap.set(stop.name, { name: stop.name, nameKannada: stop.nameKannada });
+            }
+          }
+        }
+      }
+
+      // Calculate distances and sort
+      const stopsWithDistance = [];
+      for (const [stopName, stopData] of stopsMap) {
+        const stopCoord = stopsCoordinatesByName.get(stopName);
+        if (stopCoord) {
+          const distance = getDistance(s.lat, s.lon, stopCoord.lat, stopCoord.lon);
+          stopsWithDistance.push({ ...stopData, distance });
+        }
+      }
+
+      nearbyStops = stopsWithDistance
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, 10);
+
+      search.set(s.display);
+      return;
+    }
+
+    // Clear location selection state when selecting any item
+    selectedLocation = null;
+    nearbyStops = [];
+
+    // For Stop type in location mode, find the best platform
+    if (s.type === 'Stop' && $searchMode === 'location') {
+      const allRoutes = get(routes);
+      const routesToStop = allRoutes.filter(r =>
+        r.stops && r.stops.some(stop => stop.name === s.display)
+      );
+
+      // Group by platform and count
+      const platformCounts = new Map<string, number>();
+      for (const route of routesToStop) {
+        const platform = route.platformNumber;
+        platformCounts.set(platform, (platformCounts.get(platform) || 0) + 1);
+      }
+
+      // Find platform with most routes
+      let bestPlatform = '';
+      let maxCount = 0;
+      for (const [platform, count] of platformCounts) {
+        if (count > maxCount) {
+          maxCount = count;
+          bestPlatform = platform;
+        }
+      }
+
+      // Set selectedItem with platform filter
+      selectedItem.set(undefined);
+      previousSelectedItem.set(undefined);
+      tick().then(() => {
+        search.set(s.display);
+        searchFocused = false;
+        voiceSearchActive = false;
+        const itemWithPlatform = {
+          ...s,
+          platformNumber: bestPlatform
+        };
+        dispatch('select', itemWithPlatform);
+      });
+      return;
+    }
+
     selectedItem.set(undefined);
     previousSelectedItem.set(undefined);
     tick().then( () => {
@@ -108,6 +305,23 @@
       voiceSearchActive = false;
       dispatch('select', s);
     });
+  }
+
+  // Debounced Nominatim query
+  $: if ($searchMode === 'location' && $search && $search.trim().length > 0) {
+    // Clear selected location when user starts typing again (unless they're typing the selected location)
+    if (selectedLocation && $search !== selectedLocation.display) {
+      selectedLocation = null;
+      nearbyStops = [];
+    }
+
+    if (nominatimTimeout) clearTimeout(nominatimTimeout);
+    nominatimTimeout = setTimeout(() => {
+      queryNominatim($search.trim());
+    }, 300) as unknown as number;
+  } else {
+    nominatimResults = [];
+    nominatimLoading = false;
   }
 
   // Search logic: by destination or bus number (not platform)
@@ -289,11 +503,62 @@
       })
       .sort((a, b) => b.routeCount - a.routeCount);
 
-    suggestions = [
-      ...sortedRouteSuggestions,
-      ...stopSuggestions,
-      ...areaSuggestions,
-    ];
+    // Build suggestions based on search mode
+    if ($searchMode === 'location') {
+      // Location mode
+      const toggleSuggestion = {
+        type: 'Toggle',
+        value: '',
+        display: 'Search Routes',
+        icon: 'directions_bus'
+      };
+
+      if (selectedLocation && nearbyStops.length > 0) {
+        // Show selected location header + nearby stops
+        const locationHeader = {
+          type: 'LocationHeader',
+          value: selectedLocation.display,
+          display: selectedLocation.display,
+          icon: 'place'
+        };
+        const nearbyStopsSuggestions = nearbyStops.map(stop => ({
+          type: 'Stop',
+          value: stop.name,
+          display: stop.name,
+          displayKannada: stop.nameKannada,
+          distance: Math.round(stop.distance)
+        }));
+        suggestions = [toggleSuggestion, locationHeader, ...nearbyStopsSuggestions];
+      } else {
+        // Show nominatim location results
+        const locationSuggestions = nominatimResults.map(result => {
+          const parsed = parseAddress(result.display_name);
+          return {
+            type: 'Location',
+            value: result.display_name,
+            display: parsed.main,
+            displayDetail: parsed.detail,
+            lat: parseFloat(result.lat),
+            lon: parseFloat(result.lon)
+          };
+        });
+        suggestions = [toggleSuggestion, ...locationSuggestions];
+      }
+    } else {
+      // Routes mode - show toggle + route/stop/area suggestions
+      const toggleSuggestion = {
+        type: 'Toggle',
+        value: '',
+        display: 'Search by Address',
+        icon: 'location_on'
+      };
+      suggestions = [
+        toggleSuggestion,
+        ...sortedRouteSuggestions,
+        ...stopSuggestions,
+        ...areaSuggestions,
+      ];
+    }
     setResults(Array.from(matched));
     // Automatically select first suggestion for voice search
     if (didVoiceSelect && suggestions.length > 0) {
@@ -346,7 +611,7 @@
 </div>
 
 {#if (searchFocused || voiceSearchActive) && $search && suggestions.length > 0}
-  <Dropdown bind:this={dropdownRef} {suggestions} {$search} onSelect={handleSelectSuggestion} />
+  <Dropdown bind:this={dropdownRef} {suggestions} {$search} onSelect={handleSelectSuggestion} loading={nominatimLoading} />
 {/if}
 
 <style>

@@ -147,15 +147,15 @@
               .sort((a: Route, b: Route) =>
                       a.stops.slice(Math.max(0, a.stops.findIndex((s) => s.name === 'Kempegowda Bus Station')), a.stops.findIndex((s) => s.name === $selectedItem.display)).length - b.stops.slice(Math.max(0, b.stops.findIndex(s => s.name === 'Kempegowda Bus Station')), b.stops.findIndex((s) => s.name === $selectedItem.display)).length)
       ;
-      areaRoutes = all.filter(r => {
-        const matchesArea = ((r.area && r.area.name.trim() === $selectedItem.display.trim()) || (r.via && r.via.name.trim() === $selectedItem.display.trim()));
-        const notInMain = !mainRoutes.includes(r);
-        // If platformNumber is specified, also filter by platform
-        if ($selectedItem.platformNumber && matchesArea && notInMain) {
-          return r.platformNumber === $selectedItem.platformNumber;
-        }
-        return matchesArea && notInMain;
-      });
+      // areaRoutes = all.filter(r => {
+      //   const matchesArea = ((r.area && r.area.name.trim() === $selectedItem.display.trim()) || (r.via && r.via.name.trim() === $selectedItem.display.trim()));
+      //   const notInMain = !mainRoutes.includes(r);
+      //   // If platformNumber is specified, also filter by platform
+      //   if ($selectedItem.platformNumber && matchesArea && notInMain) {
+      //     return r.platformNumber === $selectedItem.platformNumber;
+      //   }
+      //   return matchesArea && notInMain;
+      // });
       // console.log("ROUTES SORTED", mainRoutes.map(s =>
       // {
       //   return {
