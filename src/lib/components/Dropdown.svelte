@@ -33,6 +33,7 @@
 {#if suggestions.length > 0}
   <div class="cupertino-suggestions-dropdown" role="listbox">
     {#each suggestions as s, i (s.type + '-' + (s.type === 'Location' && s.lat && s.lon ? `${s.lat}_${s.lon}` : (s.value ?? s.display ?? s.displayKannada ?? i)) + '-' + (s.platformLabel ?? ''))}
+      {#if s.type !== 'Route'}
       <button
         type="button"
         class="cupertino-suggestion-item {s.type === 'Toggle' ? 'toggle-item' : ''} {s.type === 'LocationHeader' ? 'location-header-item' : ''}"
@@ -59,7 +60,7 @@
             <span class="location-header-name">{s.display}</span>
             <span class="nearby-stops-label">Nearby Stops</span>
           </div>
-        {:else if s.type === 'Route'}
+        <!--{:else if s.type === 'Route'}-->
 <!--          <div class="cupertino-suggestion-prefix">-->
 <!--            <BusModal number={s.display} />-->
 <!--          </div>-->
@@ -110,6 +111,7 @@
           </span>
         {/if}
       </button>
+      {/if}
     {/each}
 
     {#if loading}
