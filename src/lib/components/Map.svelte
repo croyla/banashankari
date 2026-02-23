@@ -184,7 +184,8 @@
             //     }
             // });
             const urlParams = new URLSearchParams(window.location.search);
-            const paramType = urlParams.get('pf') ? 'pf' : urlParams.get('r') ? 'r' : urlParams.get('s') ? 's' : urlParams.get('a') ? 'a' : undefined;
+            // Prioritize item types (s, r, a) over platform-only view (pf)
+            const paramType = urlParams.get('s') ? 's' : urlParams.get('r') ? 'r' : urlParams.get('a') ? 'a' : urlParams.get('pf') ? 'pf' : undefined;
             const paramValue = paramType ? urlParams.get(paramType) : undefined;
 
             // Add platforms geojson
@@ -457,16 +458,34 @@
                             const searchResult = platformsArr.find((val) => {
                                 return paramValue.trim().toUpperCase() == val.platformNumber
                             })
-                            if(searchResult) selectedItem.set({ type: 'Platform', display: searchResult.platformNumber });
+                            if(searchResult) selectedItem.set({
+                                type: 'Platform',
+                                display: searchResult.platformNumber,
+                                platformNumber: searchResult.platformNumber
+                            });
                         } else if (paramType === 'r' && paramValue) {
                             const searchResult = allRoutes.find((val) => paramValue.trim().toUpperCase() === val.number);
                             if(searchResult) tick().then(() => selectedItem.set({type: 'Route', display: searchResult.number, value: searchResult.number}));
                         } else if (paramType === 's' && paramValue) {
                             const searchResult = allRoutes.flatMap((v => v.stops)).find((val) => paramValue.trim().toUpperCase() === val.name.toUpperCase());
-                            if(searchResult) selectedItem.set({type: 'Stop', display: searchResult.name, displayKannada: searchResult.nameKannada});
+                            if(searchResult) {
+                                const platformParam = urlParams.get('pf');
+                                const itemData: any = {type: 'Stop', display: searchResult.name, displayKannada: searchResult.nameKannada};
+                                if (platformParam) {
+                                    itemData.platformNumber = platformParam.trim().toUpperCase();
+                                }
+                                selectedItem.set(itemData);
+                            }
                         } else if (paramType === 'a' && paramValue) {
                             const searchResult = [...allRoutes.map((v => v.area)), ...allRoutes.map((v => v.via))].find((val) => paramValue.trim().toUpperCase() === val.name.toUpperCase());
-                            if(searchResult) selectedItem.set({type: 'Area', display: searchResult.name, displayKannada: searchResult.nameKannada});
+                            if(searchResult) {
+                                const platformParam = urlParams.get('pf');
+                                const itemData: any = {type: 'Area', display: searchResult.name, displayKannada: searchResult.nameKannada};
+                                if (platformParam) {
+                                    itemData.platformNumber = platformParam.trim().toUpperCase();
+                                }
+                                selectedItem.set(itemData);
+                            }
                         }
                     }
                 });

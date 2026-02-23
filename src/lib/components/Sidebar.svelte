@@ -68,11 +68,13 @@
       copied = true;
     }
     else if (s.type === 'Area') { // Area / Via link
-      await navigator.clipboard.writeText(`${window.location.origin}/?a=${s.display}`);
+      const platformParam = s.platformNumber ? `&pf=${encodeURIComponent(s.platformNumber)}` : '';
+      await navigator.clipboard.writeText(`${window.location.origin}/?a=${encodeURIComponent(s.display)}${platformParam}`);
       copied = true;
     }
     else if (s.type === 'Stop') { // Stop link
-      await navigator.clipboard.writeText(`${window.location.origin}/?s=${s.display}`);
+      const platformParam = s.platformNumber ? `&pf=${encodeURIComponent(s.platformNumber)}` : '';
+      await navigator.clipboard.writeText(`${window.location.origin}/?s=${encodeURIComponent(s.display)}${platformParam}`);
       copied = true;
     }
     if (copied) {
