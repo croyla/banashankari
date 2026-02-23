@@ -509,7 +509,7 @@
       const toggleSuggestion = {
         type: 'Toggle',
         value: '',
-        display: 'Search Routes',
+        display: 'Search by Stop Name',
         icon: 'directions_bus'
       };
 

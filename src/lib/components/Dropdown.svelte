@@ -60,17 +60,17 @@
             <span class="nearby-stops-label">Nearby Stops</span>
           </div>
         {:else if s.type === 'Route'}
-          <div class="cupertino-suggestion-prefix">
-            <BusModal number={s.display} />
-          </div>
-          <span class="cupertino-suggestion-labels">
-            {#if s.destination}
-              <span class="cupertino-suggestion-main">To {s.destination}</span>
-            {/if}
-            {#if s.platformLabel}
-              <span class="cupertino-suggestion-platform">From {s.platformLabel}</span>
-            {/if}
-          </span>
+<!--          <div class="cupertino-suggestion-prefix">-->
+<!--            <BusModal number={s.display} />-->
+<!--          </div>-->
+<!--          <span class="cupertino-suggestion-labels">-->
+<!--            {#if s.destination}-->
+<!--              <span class="cupertino-suggestion-main">To {s.destination}</span>-->
+<!--            {/if}-->
+<!--            {#if s.platformLabel}-->
+<!--              <span class="cupertino-suggestion-platform">From {s.platformLabel}</span>-->
+<!--            {/if}-->
+<!--          </span>-->
         {:else}
           {#if s.type === 'Stop' && s.distance !== undefined}
             <span class="material-icons suggestion-icon">directions_bus</span>
