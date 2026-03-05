@@ -68,7 +68,7 @@
 
   // Nominatim query function
   async function queryNominatim(query: string) {
-    if (!query || query.length < 3) {
+    if (!query || query.length < 3 || nominatimLoading) {
       nominatimResults = [];
       return;
     }
@@ -509,7 +509,7 @@
       const toggleSuggestion = {
         type: 'Toggle',
         value: '',
-        display: 'Search by Stop Name',
+        display: $messages.search_with().replace('%1', $messages.stop_name()),
         icon: 'directions_bus'
       };
 
@@ -549,7 +549,7 @@
       const toggleSuggestion = {
         type: 'Toggle',
         value: '',
-        display: 'Search by Address',
+        display: $messages.search_with().replace('%1', $messages.location()),
         icon: 'location_on'
       };
       suggestions = [

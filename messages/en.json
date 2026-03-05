@@ -8,14 +8,14 @@
 	"buses_to": "Buses To %1",
 	"other_buses_to": "Other buses going to %1 Area",
 	"back": "Back",
-	"header": "Banashankari Bus Station",
+	"header": "%1 Bus Station",
 	"lan": "ಕನ್ನಡ",
 	"station": "Banashankari",
-	"search_with": "Search with",
+	"search_with": "Search with %1",
 	"location": "Location",
 	"stop_name": "Stop Name",
-	"EAST": "East",
-	"WEST": "West",
-	"MAIN": "Main",
-	"SOUTH": "South"
+	"east": "%1 East",
+	"west": "%1 West",
+	"main": "%1 Main",
+	"south": "%1 South"
 }

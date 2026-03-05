@@ -8,11 +8,14 @@
 	"other_buses_to": "%1ಗೆ ಹೋಗುವ ಇತರ ಬಸ್ಸುಗಳು",
 	"platform": "ಪ್ಲಾಟ್ಫಾರ್ಮ್ %1",
 	"back": "ಹಿಂತಿರುಗಿ",
-	"header": "ಕೆಂಪೇಗೌಡ ಬಸ್ ನಿಲ್ದಾಣದ",
+	"header": "%1 ಬಸ್ ನಿಲ್ದಾಣದ",
 	"lan": "English",
-	"station": "Banashankari",
-	"EAST": "East",
-	"WEST": "West",
-	"MAIN": "Main",
-	"SOUTH": "South"
+	"station": "ಬನಶಂಕರಿ",
+	"search_with": "%1 ಬಳಸಿ ಹುಡುಕಿ",
+	"location": "ಸ್ಥಳ",
+	"stop_name": "ನಿಲ್ದಾಣದ ಹೆಸರು",
+	"east": "%1 ಪೂರ್ವ ನಿಲ್ದಾಣದ",
+	"west": "%1 ಪಶ್ಚಿಮ ನಿಲ್ದಾಣದ",
+	"main": "%1 ಮುಖ್ಯ ನಿಲ್ದಾಣದ",
+	"south": "%1 ದಕ್ಷಿಣ ನಿಲ್ದಾಣದ"
 }

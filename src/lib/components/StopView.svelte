@@ -24,9 +24,9 @@
     if (!platformNumber) return '';
     const pf = platformNumber.trim();
     // If it's a number, show "Platform <num>"
-    if (/^\d+$/.test(pf)) return `Platform ${pf}`;
-    // Otherwise it's a named platform like "WEST", "SOUTH" — show "Banashankari <Name>"
-    return `Banashankari ${pf.charAt(0).toUpperCase()}${pf.slice(1).toLowerCase()}`;
+    if (/^\d+$/.test(pf)) return $messages.platform().replace('%1', pf);
+    // Otherwise it's a named platform like "WEST", "SOUTH" — show appropriate translation if available
+    return Object.hasOwn($messages, pf.toLowerCase()) ? ($messages as unknown as Record<string, () => string>)[pf.toLowerCase()]().replace('%1', $messages.station()) : pf;
   }
 
   // Live arrivals management

@@ -6,7 +6,7 @@
 </script>
 
 <header class="cupertino-header">
-  <h1>{$messages.header()}</h1>
+  <h1>{$messages.header().replace('%1', $messages.station())}</h1>
   <div class="language-switcher">
     <LanguageSwitcher />
   </div>
