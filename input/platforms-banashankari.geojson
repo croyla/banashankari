@@ -5,7 +5,9 @@
       "id": "b3b28f32e4f5b2e68314511fdafaa029",
       "type": "Feature",
       "properties": {
-        "Platform": "1"
+        "Platform": "1",
+        "OpenHour": 6.5,
+        "CloseHour": 23
       },
       "geometry": {
         "coordinates": [
@@ -19,7 +21,9 @@
       "id": "f556f699fd74a5ede4c3fdbcc3e1723d",
       "type": "Feature",
       "properties": {
-        "Platform": "2"
+        "Platform": "2",
+        "OpenHour": 6.5,
+        "CloseHour": 23
       },
       "geometry": {
         "coordinates": [
@@ -33,7 +37,9 @@
       "id": "84f00a34ad472763163ba3052a62d70a",
       "type": "Feature",
       "properties": {
-        "Platform": "3"
+        "Platform": "3",
+        "OpenHour": 6.5,
+        "CloseHour": 23
       },
       "geometry": {
         "coordinates": [
@@ -47,7 +53,9 @@
       "id": "2f8be55b36e96640e8e863a429bce0ed",
       "type": "Feature",
       "properties": {
-        "Platform": "4"
+        "Platform": "4",
+        "OpenHour": 6.5,
+        "CloseHour": 23
       },
       "geometry": {
         "coordinates": [
@@ -61,7 +69,9 @@
       "id": "2035de7eb4e9107a52efbf1181e4e471",
       "type": "Feature",
       "properties": {
-        "Platform": "5"
+        "Platform": "5",
+        "OpenHour": 6.5,
+        "CloseHour": 23
       },
       "geometry": {
         "coordinates": [
@@ -75,7 +85,9 @@
       "id": "5ed8aeae495fdf9703679c9c7cabf689",
       "type": "Feature",
       "properties": {
-        "Platform": "6"
+        "Platform": "6",
+        "OpenHour": 6.5,
+        "CloseHour": 23
       },
       "geometry": {
         "coordinates": [
@@ -89,7 +101,9 @@
       "id": "ae9dd978e844ec6d3b4b280671935e25",
       "type": "Feature",
       "properties": {
-        "Platform": "7"
+        "Platform": "7",
+        "OpenHour": 6.5,
+        "CloseHour": 23
       },
       "geometry": {
         "coordinates": [
@@ -103,7 +117,9 @@
       "id": "dc65776ef2bfd2024bcbc3ca25f5be5a",
       "type": "Feature",
       "properties": {
-        "Platform": "8"
+        "Platform": "8",
+        "OpenHour": 6.5,
+        "CloseHour": 23
       },
       "geometry": {
         "coordinates": [
@@ -117,7 +133,9 @@
       "id": "8194f31d767bdd08ac16f72670a2a0fd",
       "type": "Feature",
       "properties": {
-        "Platform": "9"
+        "Platform": "9",
+        "OpenHour": 6.5,
+        "CloseHour": 23
       },
       "geometry": {
         "coordinates": [
@@ -176,7 +194,9 @@
       "type": "Feature",
       "properties": {
         "Platform": "Main",
-        "Icon": "M"
+        "Icon": "M",
+        "CloseHour": 6.5,
+        "OpenHour": 23
       },
       "geometry": {
         "coordinates": [
@@ -195,8 +215,8 @@
       },
       "geometry": {
         "coordinates": [
-          77.57327966123466,
-          12.916679466672505
+          77.57382110044568,
+          12.917131695255307
         ],
         "type": "Point"
       }

@@ -506,7 +506,7 @@ def fetch_route_stops(route_parent_id, stop_ids, from_station_id=None):
         if not data:
             return None
         return [
-            {'stop_id': str(stop.get('stationid', '')), 'stop_name': stop.get('stationname', '')}
+            {'stop_id': str(stop.get('stationid', '')), 'stop_name': stop.get('stationname', ''), 'stop_lat': stop.get('centerlat', 0), 'stop_lon': stop.get('centerlong', 0)}
             for stop in data
         ]
 
@@ -649,13 +649,16 @@ def build_geojson(
     platform_geom_lookup = {}
     platform_color_lookup = {}
     platform_icon_lookup = {}
+    platform_hours_lookup = {}
     for feature in platforms_geojson['features']:
         plat_name = str(feature['properties'].get('Platform', '')).strip().upper()
         icon = str(str(feature['properties'].get('Icon', plat_name)).strip().upper())
+        hours =  {'open': feature['properties'].get('OpenHour', 0), 'close': feature['properties'].get('CloseHour', 0)}
         if feature['geometry']['type'] == 'Point':
             platform_geom_lookup[plat_name] = feature['geometry']
             platform_color_lookup[plat_name] = feature['properties'].get('Color', '#008F45')
             platform_icon_lookup[plat_name] = icon
+            platform_hours_lookup[plat_name] = hours
 
     # Group routes by platform
     platforms_routes = {name.upper(): [] for name in platform_geom_lookup}
@@ -736,6 +739,7 @@ def build_geojson(
     for plat_name, geometry in platform_geom_lookup.items():
         color = platform_color_lookup.get(plat_name, '#008F45')
         icon = platform_icon_lookup.get(plat_name, plat_name)
+        hours = platform_hours_lookup.get(plat_name, {})
         route_list = platforms_routes.get(plat_name, [])
 
         routes = []
@@ -787,7 +791,9 @@ def build_geojson(
                 stops.append({
                     'name': stop_name,
                     'name_kn': stop_kn,
-                    'stop_id': stop_info['stop_id']
+                    'stop_id': stop_info['stop_id'],
+                    'lat': stop_info['stop_lat'],
+                    'lon': stop_info['stop_lon']
                 })
 
             # Use last stop name as destination
@@ -818,6 +824,8 @@ def build_geojson(
                     'Platform': plat_name,
                     'Color': color,
                     'Icon': icon,
+                    'OpenHour': hours.get('open', 0),
+                    'CloseHour': hours.get('close', 0),
                     'Routes': routes
                 }
             }
