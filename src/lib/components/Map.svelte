@@ -9,6 +9,7 @@
     import {get} from 'svelte/store';
     import {Platform} from '$lib/types/Platform';
     import {previousSelectedItem, selectedItem} from '$lib/stores/selectedItem';
+    import {currentDecimalHour} from '$lib/stores/currentTime';
 
     const banashankari_CENTER: maplibregl.LngLatLike = [77.5736529, 12.917500]; // [lng, lat]
     let showResetBounds = false;
@@ -43,6 +44,17 @@
         return Math.max(20, Math.floor(Math.min(el.clientWidth, el.clientHeight) * 0.12));
     }
 
+    function isPlatformOpen(openHour: number, closeHour: number, currentHour: number): boolean {
+        // 0,0 means always open
+        if (openHour === 0 && closeHour === 0) return true;
+        if (openHour < closeHour) {
+            return currentHour >= openHour && currentHour < closeHour;
+        } else {
+            // Wraps midnight e.g. 23 → 6.5
+            return currentHour >= openHour || currentHour < closeHour;
+        }
+    }
+
     function updatePlatformColors() {
         if (!map || !platformsGeoJson) return;
         // Use the global search value to determine if a search is active
@@ -54,6 +66,7 @@
         const activePlatformFilter = currentSelectedItem?.platformNumber?.toUpperCase() || null;
 
         // Clone the geojson
+        const currentHour = get(currentDecimalHour);
         const updated = JSON.parse(JSON.stringify(platformsGeoJson));
         for (const feature of updated.features) {
             // Store original color
@@ -62,6 +75,12 @@
             }
             const platformRoutes = (feature.properties && Array.isArray(feature.properties.Routes)) ? feature.properties.Routes : [];
             const platformNumber = feature.properties.Platform?.toString().toUpperCase() || '';
+
+            feature.properties.isVisible = isPlatformOpen(
+                feature.properties.OpenHour ?? 0,
+                feature.properties.CloseHour ?? 0,
+                currentHour
+            );
 
             // If platform filter is active, only highlight that specific platform
             let isGray;
@@ -123,6 +142,13 @@
 
         // Subscribe to selectedItem to update when platform filter changes
         const unsubSelected = selectedItem.subscribe(() => {
+            if (map && platformsGeoJson) {
+                updatePlatformColors();
+            }
+        });
+
+        // Subscribe to time changes to update platform visibility as hours change
+        const unsubTime = currentDecimalHour.subscribe(() => {
             if (map && platformsGeoJson) {
                 updatePlatformColors();
             }
@@ -197,10 +223,16 @@
                     const currentResults = get(results);
                     const resultRouteIds = new Set(currentResults ? currentResults.map(r => r.number) : []);
                     const bounds = new maplibregl.LngLatBounds();
+                    const initHour = get(currentDecimalHour);
                     for (const feature of data.features) {
                         bounds.extend((feature.geometry as GeoJSON.Point).coordinates);
                         const platformRoutes = (feature.properties && Array.isArray(feature.properties.Routes)) ? feature.properties.Routes : [];
                         feature.properties!.isGray = !platformRoutes.some((route) => Object.hasOwn(route, 'Route') && resultRouteIds.has(route.Route));
+                        feature.properties!.isVisible = isPlatformOpen(
+                            feature.properties!.OpenHour ?? 0,
+                            feature.properties!.CloseHour ?? 0,
+                            initHour
+                        );
                     }
                     map.fitBounds(bounds, {padding: getFitBoundsPadding()});
                     platformsGeoJson = data;
@@ -248,7 +280,7 @@
                         id: 'platform-circles-gray',
                         type: 'circle',
                         source: 'platforms',
-                        filter: ['==', ['get', 'isGray'], true],
+                        filter: ['all', ['==', ['get', 'isGray'], true], ['==', ['get', 'isVisible'], true]],
                         paint: {
                             'circle-radius': [
                                 'interpolate',
@@ -267,7 +299,7 @@
                         id: 'platform-labels-gray',
                         type: 'symbol',
                         source: 'platforms',
-                        filter: ['==', ['get', 'isGray'], true],
+                        filter: ['all', ['==', ['get', 'isGray'], true], ['==', ['get', 'isVisible'], true]],
                         layout: {
                             'text-field': ['to-string', ['get', 'Icon']],
                             'text-size': 16,
@@ -293,7 +325,7 @@
                         id: 'platform-circles-colored',
                         type: 'circle',
                         source: 'platforms',
-                        filter: ['==', ['get', 'isGray'], false],
+                        filter: ['all', ['==', ['get', 'isGray'], false], ['==', ['get', 'isVisible'], true]],
                         paint: {
                             'circle-radius': [
                                 'interpolate',
@@ -317,7 +349,7 @@
                         id: 'platform-labels-colored',
                         type: 'symbol',
                         source: 'platforms',
-                        filter: ['==', ['get', 'isGray'], false],
+                        filter: ['all', ['==', ['get', 'isGray'], false], ['==', ['get', 'isVisible'], true]],
                         layout: {
                             'text-field': ['to-string', ['get', 'Icon']],
                             'text-size': 16
@@ -496,6 +528,7 @@
                 map.remove();
             unsubResults();
             unsubSelected();
+            unsubTime();
             unsubLive();
             unsubFocused();
         };
