@@ -14,7 +14,7 @@ import requests
 # Configuration
 # ──────────────────────────────────────────────
 
-GTFS_FOLDER = '../assets/gtfs/bmtc-19-07-2024/'  # Path to GTFS folder (needs stop_times.txt and stops.txt)
+GTFS_FOLDER = '../assets/bmtc-vonter/'  # Path to GTFS folder (needs stop_times.txt and stops.txt)
 
 API_URL = 'https://bmtcmobileapi.karnataka.gov.in/WebAPI/'
 VARNAM_API_URL = 'https://api.varnamproject.com/tl/kn/{word}'
@@ -337,6 +337,76 @@ def fetch_platform_assignments(stop_ids, next_stops, overrides, nest_level=2):
 
     print(f'  Received {len(schedule_times["Received"])} routes, {len(schedule_times["Failed"])} failures')
     return schedule_times
+
+
+# ──────────────────────────────────────────────
+# BMTC API: Fetch individual missing routes by ID
+# ──────────────────────────────────────────────
+
+def fetch_missing_routes_by_id(missing_route_ids, routes_en, overrides):
+    """Query GetTimetableByRouteid_v3 for routes missing from bulk platform queries.
+
+    A route is considered missing if its fromstationid matches one of our stop IDs
+    but it was not returned by the GetTimetableByStation_v4 bulk queries.
+    """
+    print(f'Fetching {len(missing_route_ids)} missing routes individually by route ID...')
+
+    today = datetime.datetime.now().strftime('%Y-%m-%d')
+    start_time = f'{today} 00:01'
+    end_time = f'{today} 23:59'
+
+    received = []
+
+    for route_id in missing_route_ids:
+        data = json.dumps({
+            "routeid": route_id,
+            "starttime": start_time,
+            "endtime": end_time,
+            "current_date": today
+        })
+
+        cache_desc = f'GetTimetableByRouteid_v3_{route_id}'
+        cached = get_cached_response(cache_desc, data)
+        if cached is not None:
+            response = cached
+        else:
+            try:
+                response = requests.post(
+                    f'{API_URL}GetTimetableByRouteid_v3',
+                    headers=REQUEST_HEADERS_EN,
+                    data=data,
+                    timeout=30
+                ).json()
+                store_cached_response(cache_desc, data, response)
+            except Exception as e:
+                print(f'  Error fetching route {route_id}: {e}')
+                continue
+
+        if response.get('Issuccess') is not True or not response.get('data'):
+            print(f'  Route {route_id}: no data returned')
+            continue
+
+        route_entry = response['data'][0]
+        route_en = routes_en.get(route_id, {})
+
+        pf_name = overrides.get(str(route_id), route_entry.get('platformname', ''))
+        pf_num = overrides.get(str(route_id), route_entry.get('platformnumber', ''))
+
+        new_entry = {
+            'route-number': route_en.get('routeno', route_entry.get('routeno', '')),
+            'route-name': route_en.get('routename', route_entry.get('routename', '')),
+            'from-station-id': route_en.get('fromstationid', ''),
+            'route-id': route_id,
+            'route-parent-id': '',
+            'platform-name': pf_name,
+            'platform-number': pf_num,
+            'bay-number': route_entry.get('baynumber'),
+        }
+        received.append(new_entry)
+        print(f'  Fetched route {new_entry["route-number"]} (ID: {route_id}), platform: {pf_name or pf_num or "(none)"}')
+
+    print(f'  Retrieved {len(received)}/{len(missing_route_ids)} missing routes')
+    return received
 
 
 # ──────────────────────────────────────────────
@@ -858,7 +928,7 @@ def main():
         print('Using default options')
         nest_level = 2
         file_nickname = 'banashankari'
-        stop_ids = ['21149', '20621', '22459', '21711', '22062', '20897', '20623']
+        stop_ids = ['21149', '20621', '22459', '21711', '22062', '20897', '20623', '39241']
     else:
         if sys.argv[-1].isdigit() and not sys.argv[-2].isdigit():
             # Last arg is nest_level, second-to-last is nickname
@@ -925,6 +995,19 @@ def main():
 
     # Step 3: Fetch platform assignments
     schedule_times = fetch_platform_assignments(stop_ids, next_stops, overrides, nest_level)
+
+    # Step 3b: Find routes with matching fromstationid missing from bulk queries and fetch them
+    received_route_ids = {r['route-id'] for r in schedule_times['Received']}
+    stop_ids_set = set(str(s) for s in stop_ids)
+    missing_route_ids = [
+        route_id for route_id, route in routes_en.items()
+        if str(route.get('fromstationid', '')) in stop_ids_set
+        and route_id not in received_route_ids
+    ]
+    if missing_route_ids:
+        print(f'Found {len(missing_route_ids)} routes with matching fromstationid absent from bulk queries')
+        missing_received = fetch_missing_routes_by_id(missing_route_ids, routes_en, overrides)
+        schedule_times['Received'].extend(missing_received)
 
     # Save raw data
     os.makedirs('raw', exist_ok=True)
